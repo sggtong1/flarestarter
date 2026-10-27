@@ -2,9 +2,9 @@ import { createServerFn } from '@tanstack/react-start'
 
 export const startSponsorship = createServerFn({ method: 'POST' })
   .inputValidator((d: { mode: 'once' | 'monthly'; amountCents: number; github?: string; message?: string; method?: 'card' | 'wechat' }) => d)
-  .handler(async ({ data }): Promise<{ url: string }> => {
+  .handler(async ({ data }): Promise<{ url: string | null }> => {
     const { env } = await import('@/lib/env')
-    if (!env.STRIPE_SECRET_KEY) throw new Error('Sponsorship not configured')
+    if (!env.STRIPE_SECRET_KEY?.trim()) return { url: null }
     const { validateAmount, validateGithub, validateMessage } = await import('./amounts')
     const { createSponsorCheckout } = await import('./sponsor.stripe')
     const { isWechatPayEnabled } = await import('./sponsor.config')
@@ -37,7 +37,7 @@ export const getSponsorConfig = createServerFn({ method: 'GET' }).handler(async 
   const { listPublicSponsors } = await import('./sponsor.server')
   const { isWechatPayEnabled } = await import('./sponsor.config')
   const sponsors = await listPublicSponsors(createDb(env.DB))
-  return { configured: !!env.STRIPE_SECRET_KEY, wechatEnabled: isWechatPayEnabled(env), sponsors }
+  return { configured: !!env.STRIPE_SECRET_KEY?.trim(), wechatEnabled: isWechatPayEnabled(env), sponsors }
 })
 
 export const getSponsorManageLink = createServerFn({ method: 'POST' })

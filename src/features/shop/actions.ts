@@ -22,11 +22,14 @@ export const startShopCheckoutFn = createServerFn({ method: 'POST' })
     const { env } = await import('@/lib/env')
     const { createDb } = await import('@/db/client')
     const { readUser } = await import('@/features/auth/readUser.server')
-    const { createStripeProvider } = await import('@/features/billing/stripe')
     const { startShopCheckout } = await import('./orders.server')
     const { localizePath } = await import('@/features/i18n/locale')
     const user = await readUser()
     if (!user) return { ok: false as const, error: 'forbidden' as const }
+    // Construct Stripe only after the key check. An empty secret makes the
+    // SDK throw, which would turn the checkout button into a 500.
+    if (!env.STRIPE_SECRET_KEY?.trim()) return { ok: false as const, error: 'not_configured' as const }
+    const { createStripeProvider } = await import('@/features/billing/stripe')
     const origin = new URL(env.BETTER_AUTH_URL).origin
     const locale = data.locale
     return startShopCheckout(
@@ -90,10 +93,11 @@ export const manageShopSubscriptionFn = createServerFn({ method: 'POST' })
     const { env } = await import('@/lib/env')
     const { createDb } = await import('@/db/client')
     const { readUser } = await import('@/features/auth/readUser.server')
-    const { createStripeProvider } = await import('@/features/billing/stripe')
     const { manageShopSubscriptionForUser } = await import('./orders.server')
     const user = await readUser()
     if (!user) return { ok: false as const, error: 'forbidden' as const }
+    if (!env.STRIPE_SECRET_KEY?.trim()) return { ok: false as const, error: 'not_configured' as const }
+    const { createStripeProvider } = await import('@/features/billing/stripe')
     return manageShopSubscriptionForUser(
       createDb(env.DB),
       createStripeProvider(env),

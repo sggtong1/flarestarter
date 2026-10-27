@@ -51,7 +51,7 @@ export function createAuth(authEnv: AuthEnv, db: DB) {
       enabled: true,
       // 只在真能发邮件时强制验证：缺 RESEND_API_KEY 时验证邮件只进日志（dev transport），
       // 强制会把所有注册用户永久锁在「请先验证邮箱」外——遵循「key 缺失 → 功能关闭」约定。
-      requireEmailVerification: Boolean(authEnv.RESEND_API_KEY),
+      requireEmailVerification: Boolean(authEnv.RESEND_API_KEY?.trim()),
       sendResetPassword: async ({ user, url }, request) => {
         const locale = localeFromRequest(request)
         await sendEmail({ to: user.email, locale, template: 'reset-password', data: { url } })

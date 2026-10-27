@@ -11,6 +11,7 @@
 import * as Sentry from '@sentry/cloudflare'
 import entry from '@tanstack/react-start/server-entry'
 import { withSecurityHeaders } from '@/lib/security-headers'
+import { withPreviewRobots } from '@/lib/preview'
 import { assertEnvOnce } from '@/lib/env-validate'
 import { createDb } from '@/db/client'
 import { runCleanup } from '@/features/maintenance/cleanup'
@@ -23,7 +24,7 @@ const handler = {
   async fetch(request: Request, env: Cloudflare.Env, ctx: ExecutionContext): Promise<Response> {
     await assertEnvOnce()
     const response = await fetchHandler(request, env, ctx)
-    return withSecurityHeaders(response)
+    return withPreviewRobots(withSecurityHeaders(response), env.APP_ENV)
   },
 
   // Cron Triggers entry (schedule in wrangler.jsonc → triggers.crons). Runs the

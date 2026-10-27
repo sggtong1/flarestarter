@@ -42,7 +42,7 @@ export const Route = createFileRoute('/{-$locale}/checkout')({
 function CheckoutPage() {
   const search = Route.useSearch()
   const { status } = Route.useLoaderData()
-  const { user } = rootRoute.useLoaderData()
+  const { user, preview } = rootRoute.useLoaderData()
   const { t, locale } = useTranslation()
   const [selection, setSelection] = useState<Selection>(() => selectionFromSearch(search))
   const [busy, setBusy] = useState(false)
@@ -55,7 +55,7 @@ function CheckoutPage() {
     const result = await startShopCheckoutFn({ data: { selection, locale } })
     setBusy(false)
     if (!result.ok) {
-      setError(result.error === 'not_configured' ? t('shop.notConfigured') : t('shop.manageFailed'))
+      setError(result.error === 'not_configured' ? (preview ? t('shop.previewCheckout') : t('shop.notConfigured')) : t('shop.manageFailed'))
       return
     }
     window.location.assign(result.url)
@@ -71,7 +71,7 @@ function CheckoutPage() {
             <BuyBox selection={selection} onChange={setSelection} busy={busy} />
           </div>
         </div>
-        <aside className="h-fit rounded-3xl border p-5 md:sticky md:top-24" style={{ background: 'var(--card)', borderColor: 'var(--border)' }}>
+        <aside className="h-fit rounded-3xl border p-5 md:sticky md:top-[calc(6rem+var(--preview-banner-h,0px))]" style={{ background: 'var(--card)', borderColor: 'var(--border)' }}>
           <h2 className="text-lg font-semibold">{productConfig.product.name}</h2>
           <p className="mt-2 text-sm leading-relaxed" style={{ color: 'var(--fg-2)' }}>
             {t('shop.shippingNote', {
@@ -86,7 +86,9 @@ function CheckoutPage() {
             <p className="mt-3 text-sm" style={{ color: 'var(--fg-2)' }}>{t('shop.inlinePrices')}</p>
           )}
           {!status.configured && (
-            <p className="mt-4 rounded-xl px-3 py-2 text-sm" style={{ background: 'var(--bg-alt)' }}>{t('shop.notConfigured')}</p>
+            <p className="mt-4 rounded-xl px-3 py-2 text-sm" role="status" style={{ background: 'var(--bg-alt)' }}>
+              {preview ? t('shop.previewCheckout') : t('shop.notConfigured')}
+            </p>
           )}
           {user ? (
             <>

@@ -1,8 +1,10 @@
 import type { CSSProperties, ReactNode } from 'react'
-import { Link } from '@tanstack/react-router'
+import { getRouteApi, Link } from '@tanstack/react-router'
 import '../storefront.css'
 import { productConfig } from '@/features/shop/product.config'
 import { useTranslation } from '@/features/i18n/provider'
+
+const rootRoute = getRouteApi('__root__')
 
 export function brandStyle(): CSSProperties {
   const c = productConfig.colors
@@ -53,10 +55,13 @@ export function StoreShell({
   showBanner?: boolean
 }) {
   const { t } = useTranslation()
+  const { preview } = rootRoute.useLoaderData()
   const c = productConfig
   return (
     <div className="nd-root min-h-screen font-display" style={brandStyle()}>
-      {showBanner && c.product.previewBanner && (
+      {/* Staging already shows the sticky preview banner. Keep this in-flow
+          notice for every other environment, including production. */}
+      {showBanner && !preview && c.product.previewBanner && (
         <p className="px-4 py-2 text-center text-[13px] leading-snug" style={{ background: c.colors.ink, color: c.colors.paper }}>
           {c.product.previewBanner}
         </p>

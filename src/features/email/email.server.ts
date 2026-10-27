@@ -37,8 +37,9 @@ export function resendTransport(apiKey: string, from: string): Transport {
 export async function sendEmail(input: SendEmailInput): Promise<void> {
   // Dynamic import keeps cloudflare:workers out of the module graph in node/test environments.
   const { env } = await import('@/lib/env')
-  const apiKey = env.RESEND_API_KEY
-  const from = env.EMAIL_FROM || 'FlareStarter <onboarding@resend.dev>'
+  // Blank or whitespace is "not configured" — don't construct the Resend client.
+  const apiKey = env.RESEND_API_KEY?.trim()
+  const from = env.EMAIL_FROM?.trim() || 'FlareStarter <onboarding@resend.dev>'
   // 生产构建里降级路径要脱敏（import.meta.env.PROD 由 vite 构建期注入；vite dev 为 false，
   // 本地开发照旧在控制台拿到完整链接）。
   const transport: Transport = apiKey ? resendTransport(apiKey, from) : createDevTransport({ redactBody: import.meta.env.PROD })

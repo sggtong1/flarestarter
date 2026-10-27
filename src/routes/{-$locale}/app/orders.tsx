@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { createFileRoute, useRouter } from '@tanstack/react-router'
+import { createFileRoute, getRouteApi, useRouter } from '@tanstack/react-router'
 import { requireUser } from '@/features/auth/middleware'
 import { useTranslation } from '@/features/i18n/provider'
 import { AppShell } from '@/components/app/app-shell'
@@ -8,6 +8,8 @@ import { Card } from '@/components/ui/card'
 import { formatMoney } from '@/features/shop/catalog'
 import { listMyShopFn, manageShopSubscriptionFn, openShopPortalFn } from '@/features/shop/actions'
 import type { ShopSubscriptionView } from '@/features/shop/orders.server'
+
+const rootRoute = getRouteApi('__root__')
 
 export const Route = createFileRoute('/{-$locale}/app/orders')({
   head: () => ({ meta: [{ title: 'Orders' }, { name: 'robots', content: 'noindex' }] }),
@@ -26,7 +28,9 @@ function day(ms: number | null): string {
 
 function OrdersPage() {
   const { user, shop } = Route.useLoaderData()
+  const { preview } = rootRoute.useLoaderData()
   const { t, locale } = useTranslation()
+  const unavailable = preview ? t('shop.previewCheckout') : t('shop.notConfigured')
   const router = useRouter()
   const [message, setMessage] = useState<string | null>(null)
   const [busy, setBusy] = useState<string | null>(null)
@@ -37,7 +41,11 @@ function OrdersPage() {
     const result = await manageShopSubscriptionFn({ data: { action, subscriptionId: id, frequencyMonths } })
     setBusy(null)
     if (!result.ok) {
-      setMessage(result.error === 'already_skipped' ? t('shop.alreadySkipped') : t('shop.manageFailed'))
+      setMessage(
+        result.error === 'already_skipped' ? t('shop.alreadySkipped')
+        : result.error === 'not_configured' ? unavailable
+        : t('shop.manageFailed'),
+      )
       return
     }
     await router.invalidate()
@@ -47,7 +55,7 @@ function OrdersPage() {
     setMessage(null)
     const result = await openShopPortalFn({ data: { locale } })
     if (!result.ok) {
-      setMessage(result.error === 'not_configured' ? t('shop.notConfigured') : t('shop.manageFailed'))
+      setMessage(result.error === 'not_configured' ? unavailable : t('shop.manageFailed'))
       return
     }
     window.location.assign(result.url)

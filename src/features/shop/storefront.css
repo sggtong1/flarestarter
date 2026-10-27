@@ -523,8 +523,10 @@
     .nd-story-how .nd-story-pin,
     .nd-story-spaces .nd-story-pin {
       position: sticky;
-      top: 4rem;
-      height: calc(100svh - 4rem);
+      /* 4rem is the store header. --preview-banner-h is 0 outside staging,
+         so the pin still fills the viewport under the header in production. */
+      top: calc(4rem + var(--preview-banner-h, 0px));
+      height: calc(100svh - 4rem - var(--preview-banner-h, 0px));
       display: flex;
       flex-direction: column;
       justify-content: flex-start;
