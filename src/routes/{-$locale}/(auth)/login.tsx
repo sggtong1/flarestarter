@@ -10,8 +10,10 @@ import { authPageHead } from '@/features/auth/head'
 import { AuthCard, Field } from '@/features/auth/components/auth-card'
 import { SocialButtons } from '@/features/auth/components/social-buttons'
 import { Button } from '@/components/ui/button'
+import { parseAuthSearch, safeNextPath } from '@/features/shop/safe-next'
 
 export const Route = createFileRoute('/{-$locale}/(auth)/login')({
+  validateSearch: parseAuthSearch,
   head: ({ params }) => authPageHead(params, 'loginTitle'),
   loader: async () => {
     const [providers, turnstileSiteKey] = await Promise.all([
@@ -25,6 +27,7 @@ export const Route = createFileRoute('/{-$locale}/(auth)/login')({
 
 function Login() {
   const { providers, turnstileSiteKey } = Route.useLoaderData()
+  const { next } = Route.useSearch()
   const { t } = useTranslation()
   const router = useRouter()
   const { token, enabled, widget, reset } = useTurnstile(turnstileSiteKey)
@@ -42,6 +45,11 @@ function Login() {
     if (res.error) {
       setError(t(mapAuthError(res.error)))
       reset() // tokens are single-use
+      return
+    }
+    const dest = safeNextPath(next)
+    if (dest) {
+      window.location.assign(dest)
       return
     }
     router.navigate({ to: '/{-$locale}/app' })
@@ -70,7 +78,7 @@ function Login() {
       <SocialButtons providers={providers} />
       <p className="mt-5 text-center text-sm text-fg-2">
         {t('auth.noAccount')}{' '}
-        <Link to="/{-$locale}/register" className="font-semibold text-primary">
+        <Link to="/{-$locale}/register" search={{ next }} className="font-semibold text-primary">
           {t('auth.register')}
         </Link>
       </p>

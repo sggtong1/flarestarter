@@ -1,9 +1,9 @@
 import { dictionaries, type Locale } from '@/features/i18n/locale'
 
 interface RenderInput {
-  template: 'verify-email' | 'reset-password' | 'pro-activated'
+  template: 'verify-email' | 'reset-password' | 'pro-activated' | 'order-confirmation'
   locale: Locale
-  data: { url: string }
+  data: { url: string; summary?: string; total?: string }
 }
 
 function esc(s: string): string {
@@ -12,11 +12,25 @@ function esc(s: string): string {
 
 export async function renderEmail(input: RenderInput): Promise<{ subject: string; html: string; text: string }> {
   const dict = dictionaries[input.locale]
+  const url = input.data.url
+  if (input.template === 'order-confirmation') {
+    const k = dict.email.orderConfirmation
+    const summary = input.data.summary ?? ''
+    const total = input.data.total ?? ''
+    const html = `<!doctype html><html><body style="font-family:sans-serif;background:#f4efe7">
+<div style="max-width:480px;margin:24px auto;padding:24px;background:#fffdf8;border-radius:8px">
+<h1>${esc(k.heading)}</h1><p>${esc(k.body)}</p>
+<p><strong>${esc(k.summaryLabel)}</strong><br>${esc(summary)}</p>
+<p><strong>${esc(k.totalLabel)}</strong> ${esc(total)}</p>
+<p><a href="${esc(url)}" style="background:#1f6a52;color:#f4fbf7;padding:10px 16px;border-radius:6px;text-decoration:none">${esc(k.button)}</a></p>
+<p style="color:#888;font-size:12px">${esc(url)}</p></div></body></html>`
+    const text = `${k.heading}\n\n${k.body}\n\n${k.summaryLabel}: ${summary}\n${k.totalLabel}: ${total}\n${url}`
+    return { subject: k.subject, html, text }
+  }
   const k =
     input.template === 'verify-email' ? dict.email.verify
     : input.template === 'reset-password' ? dict.email.reset
     : dict.email.proActivated
-  const url = input.data.url
   const html = `<!doctype html><html><body style="font-family:sans-serif;background:#f6f6f6">
 <div style="max-width:480px;margin:24px auto;padding:24px;background:#fff;border-radius:8px">
 <h1>${esc(k.heading)}</h1><p>${esc(k.body)}</p>

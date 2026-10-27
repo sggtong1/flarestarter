@@ -21,6 +21,65 @@
 
 **English** | [简体中文](README.zh.md)
 
+## Nookdry store
+
+This fork is a single-product store for **Nookdry**, a cordless dehumidifier for closets, cabinets, drawers, entryways, cars, and RVs. Revenue is the device (one-time) plus refill-pod subscriptions. The landing page is `/`. Docs stay at `/docs`. The admin console stays at `/admin`, with store orders at `/admin/orders`.
+
+### Change the brand and product
+
+Edit [`src/features/shop/product.config.ts`](src/features/shop/product.config.ts) only:
+
+- Parent brand name, logo mark, tagline, and colors
+- Placeholder prices (device, every 1/2/3 months, pod packs of 1/3/6)
+- Placeholder specs, shipping, guarantee, FAQ
+- Sample quotes — these are **not** real reviews. Empty `sampleQuotes` to remove the section. Clear `product.previewBanner` when the real copy ships.
+
+UI chrome (buttons, checkout, account, admin) is in `src/features/i18n/dictionaries/en.ts` and `zh.ts`. Shipped marketing copy is English. After a color or name change, also update `name` and `theme_color` in [`public/manifest.json`](public/manifest.json). The favicon and `logo192.png` / `logo512.png` are still the starter marks.
+
+### Prices in Stripe
+
+Checkout reuses the existing Stripe provider (one-time `payment` mode, and `subscription` mode with the device as a one-time line plus a recurring pod price).
+
+1. In the Stripe Dashboard (test mode first), create a product for the device, a product for refill pods, and Prices:
+   - Device, one-time
+   - Pod pack of 1, 3, and 6, one-time (or one pod price and sell quantity — this app expects a price per pack)
+   - Recurring pod delivery every 1, 2, and 3 months (`interval=month`, `interval_count` 1, 2, or 3)
+2. Put the price ids in `.dev.vars` / Wrangler secrets:
+
+```bash
+STRIPE_SECRET_KEY=sk_test_...
+STRIPE_WEBHOOK_SECRET=whsec_...
+STRIPE_PRICE_NOOKDRY_DEVICE=price_...
+STRIPE_PRICE_NOOKDRY_PODS_1=price_...
+STRIPE_PRICE_NOOKDRY_PODS_3=price_...
+STRIPE_PRICE_NOOKDRY_PODS_6=price_...
+STRIPE_PRICE_NOOKDRY_SUB_1=price_...
+STRIPE_PRICE_NOOKDRY_SUB_2=price_...
+STRIPE_PRICE_NOOKDRY_SUB_3=price_...
+```
+
+If those price ids are blank but `STRIPE_SECRET_KEY` is set, Checkout uses inline `price_data` from `product.config.ts`. That is enough for test mode. Create real Prices before production and keep the config amounts in sync — the page and JSON-LD read the config, while a set price id is what Stripe actually charges.
+
+The webhook is the existing `POST /api/webhooks/stripe`. Point the Stripe endpoint there (same secret as `STRIPE_WEBHOOK_SECRET`). Store events are marked `metadata.purpose=shop` so they do not grant the template's SaaS Pro plan.
+
+In Stripe, turn on the Customer Portal (payment method and invoices). Skip, cadence change, and cancel-at-period-end run from `/app/orders` through the same Stripe client. Locally: `stripe listen --forward-to localhost:3000/api/webhooks/stripe`. Test card `4242 4242 4242 4242`.
+
+Order mail uses Resend when `RESEND_API_KEY` and `EMAIL_FROM` are set, and the console transport when they are not.
+
+### Deploy to Cloudflare
+
+```bash
+cp wrangler.example.jsonc wrangler.jsonc   # once
+pnpm db:migrate:local                      # creates shop_order and shop_subscription
+# production / staging, after the D1 database exists:
+pnpm db:migrate:prod                       # or db:migrate:staging
+pnpm deploy:prod                           # or deploy:staging
+```
+
+Set the Stripe and Resend values with `wrangler secret put` (do not commit them). `BETTER_AUTH_SECRET` and `BETTER_AUTH_URL` stay required. The store runs on Workers + D1; no extra paid services are required beyond Stripe and optional Resend.
+
+---
+
 FlareStarter ships only what actually works: every feature in this repo is a real implementation — no mocks, no stubs, no placeholder TODOs padding the count. It all runs on the Cloudflare free-to-cheap stack (Workers + D1 + KV).
 
 ## Core advantages

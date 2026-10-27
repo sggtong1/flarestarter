@@ -1,0 +1,782 @@
+/* Nookdry storefront motion. Final frames are the default so a browser
+   without scroll timelines, or a visitor who asks for less motion, still
+   sees the full story. Scroll-driven scenes only engage when both are ok. */
+
+.nd-display {
+  text-wrap: balance;
+}
+
+.nd-kicker {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.nd-kicker::before {
+  content: "";
+  width: 1.35rem;
+  height: 2px;
+  border-radius: 999px;
+  background: currentColor;
+  flex: none;
+}
+
+.nd-hero {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  min-height: calc(100svh - 7.5rem);
+  display: flex;
+  align-items: center;
+}
+
+.nd-hero-glow {
+  position: absolute;
+  inset: -8% -10% auto;
+  height: 92%;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse at 72% 42%, color-mix(in srgb, var(--primary) 32%, transparent), transparent 58%),
+    radial-gradient(ellipse at 18% 78%, color-mix(in srgb, var(--clay) 28%, transparent), transparent 52%),
+    radial-gradient(ellipse at 60% 100%, color-mix(in srgb, var(--primary) 10%, white), transparent 46%);
+}
+
+.nd-hero-stage {
+  position: relative;
+  min-height: 420px;
+  display: grid;
+  place-items: center;
+}
+
+@media (max-width: 767px) {
+  .nd-hero-stage {
+    order: -1;
+    min-height: 280px;
+  }
+}
+
+.nd-device-wrap {
+  position: relative;
+  width: min(100%, 440px);
+  margin-inline: auto;
+}
+
+.nd-device {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.nd-pod-piece {
+  position: absolute;
+  z-index: 2;
+  left: 36.6%;
+  top: 58.5%;
+  width: 22.8%;
+  height: auto;
+  filter: drop-shadow(0 10px 12px rgba(28, 25, 21, 0.16));
+}
+
+.nd-snap-anchor {
+  position: absolute;
+  left: 48%;
+  top: 62%;
+  width: 30%;
+  aspect-ratio: 1;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+
+.nd-snap-ring {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border: 2px solid var(--primary);
+  border-radius: 999px;
+  opacity: 0;
+}
+
+.nd-ring {
+  position: absolute;
+  border-radius: 999px;
+  border: 1px solid color-mix(in srgb, var(--primary) 32%, transparent);
+  pointer-events: none;
+}
+
+.nd-ring-a {
+  width: min(92%, 460px);
+  height: min(92%, 460px);
+  border-color: color-mix(in srgb, var(--primary) 28%, transparent);
+}
+
+.nd-ring-b {
+  width: min(62%, 300px);
+  height: min(62%, 300px);
+  border-color: color-mix(in srgb, var(--clay) 45%, transparent);
+}
+
+.nd-pod-stage {
+  display: grid;
+  place-items: center;
+}
+
+.nd-pod-stage .nd-device-wrap {
+  width: min(100%, 380px);
+}
+
+.nd-vignette {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.nd-mark {
+  width: 3.5rem;
+  height: 3.5rem;
+  display: block;
+}
+
+.nd-buybox {
+  box-shadow: 0 30px 70px -42px color-mix(in srgb, var(--foreground) 55%, transparent);
+}
+
+.nd-buybar {
+  box-shadow: 0 -12px 40px -24px color-mix(in srgb, var(--foreground) 45%, transparent);
+}
+
+.nd-meter {
+  display: none;
+}
+
+.nd-droplets {
+  display: none;
+}
+
+.nd-timeline {
+  position: relative;
+  display: grid;
+  gap: 0.85rem;
+  margin: 0;
+  padding: 0.25rem 0 0.25rem 1.6rem;
+  list-style: none;
+}
+
+.nd-timeline::before {
+  content: "";
+  position: absolute;
+  left: 0.35rem;
+  top: 0.7rem;
+  bottom: 0.7rem;
+  width: 2px;
+  border-radius: 999px;
+  background: linear-gradient(var(--primary), color-mix(in srgb, var(--primary) 25%, var(--border)));
+  transform-origin: top center;
+}
+
+.nd-tl {
+  position: relative;
+  display: grid;
+  gap: 0.15rem;
+  padding: 0.85rem 1rem;
+  border-radius: 1rem;
+  border: 1px solid var(--border);
+  background: var(--card);
+}
+
+.nd-tl-mark {
+  position: absolute;
+  left: -1.48rem;
+  top: 1.15rem;
+  width: 0.7rem;
+  height: 0.7rem;
+  border-radius: 999px;
+  background: var(--primary);
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--primary) 18%, transparent);
+}
+
+.nd-nook {
+  background: color-mix(in srgb, var(--primary) 9%, transparent);
+  font-weight: 600;
+}
+
+.nd-faq summary {
+  list-style: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  cursor: pointer;
+}
+
+.nd-faq summary::-webkit-details-marker {
+  display: none;
+}
+
+.nd-faq summary::after {
+  content: "";
+  width: 0.55rem;
+  height: 0.55rem;
+  border-right: 2px solid currentColor;
+  border-bottom: 2px solid currentColor;
+  transform: rotate(45deg);
+  flex: none;
+  transition: transform 0.2s ease;
+}
+
+.nd-faq details[open] summary::after {
+  transform: rotate(225deg);
+}
+
+.nd-scene-stack {
+  display: grid;
+  gap: 1rem;
+}
+
+.nd-how-steps {
+  position: relative;
+  display: grid;
+  gap: 1.25rem;
+}
+
+.nd-scene {
+  display: grid;
+  gap: 0.85rem;
+  align-content: start;
+}
+
+.nd-story-spaces {
+  background: var(--foreground);
+  color: var(--background);
+}
+
+.nd-story-spaces .nd-scene {
+  border-radius: 1.5rem;
+  padding: 0.75rem 0.75rem 1.15rem;
+  background: color-mix(in srgb, var(--foreground) 82%, white);
+}
+
+@media (min-width: 768px) {
+  .nd-scene-stack {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .nd-hero-device {
+    animation: nd-hero-in 1.15s cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+
+  .nd-fan {
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: nd-spin 8s linear infinite;
+  }
+
+  .nd-press {
+    transition: transform 0.18s ease;
+  }
+
+  .nd-press:hover {
+    transform: translateY(-2px);
+  }
+
+  .nd-press:active {
+    transform: translateY(0) scale(0.98);
+  }
+
+  .nd-offer,
+  .nd-choice {
+    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease, background-color 0.2s ease;
+  }
+
+  .nd-offer:hover,
+  .nd-choice:hover {
+    transform: translateY(-2px);
+  }
+
+  .nd-offer:active,
+  .nd-choice:active {
+    transform: translateY(0) scale(0.985);
+  }
+
+  .nd-offer[aria-pressed='true'] {
+    box-shadow: 0 14px 30px -18px color-mix(in srgb, var(--primary) 80%, transparent);
+  }
+
+  .nd-card {
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+  }
+
+  .nd-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 22px 40px -30px color-mix(in srgb, var(--foreground) 50%, transparent);
+  }
+
+  .nd-buybar {
+    animation: nd-bar-in 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.45s both;
+  }
+
+  .nd-faq details[open] p {
+    animation: nd-rise 0.35s ease;
+  }
+}
+
+@keyframes nd-hero-in {
+  from {
+    opacity: 0;
+    transform: translateY(56px) rotate(-8deg) scale(0.94);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes nd-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes nd-bar-in {
+  from {
+    transform: translateY(120%);
+  }
+  to {
+    transform: none;
+  }
+}
+
+@keyframes nd-drift {
+  to {
+    transform: translateY(-72px) scale(1.05);
+  }
+}
+
+@keyframes nd-drift-slow {
+  to {
+    transform: translateY(-36px);
+  }
+}
+
+@keyframes nd-hold-out {
+  0%,
+  70% {
+    opacity: 1;
+    transform: none;
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-18px);
+  }
+}
+
+@keyframes nd-fade-through {
+  0% {
+    opacity: 0;
+    transform: translateY(22px);
+  }
+  20%,
+  76% {
+    opacity: 1;
+    transform: none;
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-18px);
+  }
+}
+
+@keyframes nd-in-hold {
+  0% {
+    opacity: 0;
+    transform: translateY(22px);
+  }
+  24%,
+  100% {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes nd-snap {
+  0% {
+    transform: translateY(-210px) rotate(-16deg) scale(1.04);
+  }
+  52% {
+    transform: translateY(-70px) rotate(-6deg);
+  }
+  74% {
+    transform: translateY(10px) rotate(0deg) scale(1.08);
+  }
+  86%,
+  100% {
+    transform: translateY(0) rotate(0deg) scale(1);
+  }
+}
+
+@keyframes nd-ring {
+  0%,
+  62% {
+    opacity: 0;
+    transform: scale(0.6);
+  }
+  78% {
+    opacity: 0.95;
+    transform: scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.2);
+  }
+}
+
+@keyframes nd-mist {
+  0% {
+    opacity: 0.2;
+  }
+  35% {
+    opacity: 0.95;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes nd-dry {
+  from {
+    transform: scaleX(1);
+  }
+  to {
+    transform: scaleX(0.12);
+  }
+}
+
+@keyframes nd-evaporate {
+  from {
+    opacity: 0.9;
+    transform: translateY(0) scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(36px) scale(0.25);
+  }
+}
+
+@keyframes nd-draw {
+  from {
+    transform: scaleY(0);
+  }
+  to {
+    transform: scaleY(1);
+  }
+}
+
+@keyframes nd-arrive {
+  from {
+    opacity: 0;
+    transform: translateX(-28px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .nd-hero-glow {
+      animation: nd-drift linear both;
+      animation-timeline: view();
+      animation-range: cover 0% cover 80%;
+    }
+
+    .nd-hero-parallax {
+      animation: nd-drift-slow linear both;
+      animation-timeline: view();
+      animation-range: cover 0% cover 70%;
+    }
+
+    .nd-ring-a {
+      animation: nd-drift-slow linear both;
+      animation-timeline: view();
+      animation-range: cover 10% cover 80%;
+    }
+
+    .nd-story-how {
+      height: 230vh;
+      view-timeline-name: --nd-how;
+      view-timeline-axis: block;
+    }
+
+    .nd-story-spaces {
+      height: 320vh;
+      view-timeline-name: --nd-spaces;
+      view-timeline-axis: block;
+    }
+
+    .nd-story-how .nd-story-pin,
+    .nd-story-spaces .nd-story-pin {
+      position: sticky;
+      top: 4rem;
+      height: calc(100svh - 4rem);
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      overflow: hidden;
+      padding-top: 0.75rem;
+      padding-bottom: 0.75rem;
+    }
+
+    .nd-story-how .nd-how-layout {
+      display: grid;
+      gap: 0.5rem;
+      align-items: center;
+    }
+
+    .nd-story-how .nd-story-pin {
+      overflow: visible;
+    }
+
+    .nd-story-how .nd-pod-stage {
+      order: -1;
+    }
+
+    .nd-story-how .nd-device-wrap {
+      width: min(46vw, 230px);
+    }
+
+    .nd-how-steps {
+      min-height: 11.5rem;
+    }
+
+    .nd-story-spaces .nd-story-pin {
+      padding-bottom: 5.25rem;
+    }
+
+    .nd-how-step {
+      position: absolute;
+      inset: 0;
+      animation-timing-function: linear;
+      animation-fill-mode: both;
+      animation-duration: auto;
+      animation-timeline: --nd-how;
+    }
+
+    .nd-how-step.is-first {
+      animation-name: nd-hold-out;
+    }
+
+    .nd-how-step.is-mid {
+      animation-name: nd-fade-through;
+    }
+
+    .nd-how-step.is-last {
+      animation-name: nd-in-hold;
+    }
+
+    .nd-story-how .nd-pod-piece {
+      animation: nd-snap linear both;
+      animation-duration: auto;
+      animation-timeline: --nd-how;
+      animation-range: 0% 100%;
+    }
+
+    .nd-story-how .nd-snap-ring {
+      transform-origin: center;
+      animation: nd-ring linear both;
+      animation-duration: auto;
+      animation-timeline: --nd-how;
+      animation-range: 0% 100%;
+    }
+
+    .nd-mist {
+      animation: nd-mist linear both;
+      animation-duration: auto;
+      animation-timeline: --nd-how;
+      animation-range: 0% 75%;
+    }
+
+    .nd-story-spaces .nd-scene-stack {
+      position: relative;
+      display: block;
+      flex: 1;
+      min-height: 0;
+    }
+
+    .nd-story-spaces .nd-scene {
+      position: absolute;
+      inset: 0;
+      margin: 0;
+      background: transparent;
+      padding: 0.5rem 0 3.5rem;
+      align-content: center;
+      animation-timing-function: linear;
+      animation-fill-mode: both;
+      animation-duration: auto;
+      animation-timeline: --nd-spaces;
+    }
+
+    .nd-story-spaces .nd-scene.is-first {
+      animation-name: nd-hold-out;
+    }
+
+    .nd-story-spaces .nd-scene.is-mid {
+      animation-name: nd-fade-through;
+    }
+
+    .nd-story-spaces .nd-scene.is-last {
+      animation-name: nd-in-hold;
+    }
+
+    .nd-meter {
+      display: block;
+      position: absolute;
+      left: 6%;
+      right: 6%;
+      bottom: 4.75rem;
+      height: 8px;
+      border-radius: 999px;
+      background: color-mix(in srgb, white 16%, transparent);
+      overflow: hidden;
+      z-index: 3;
+    }
+
+    .nd-meter-fill {
+      height: 100%;
+      width: 100%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, #7eb6d6, var(--primary));
+      transform-origin: left center;
+      animation: nd-dry linear both;
+      animation-duration: auto;
+      animation-timeline: --nd-spaces;
+      animation-range: 4% 96%;
+    }
+
+    .nd-droplets {
+      display: block;
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      z-index: 2;
+    }
+
+    .nd-droplet {
+      position: absolute;
+      width: 12px;
+      height: 16px;
+      border-radius: 50% 50% 50% 50% / 35% 35% 65% 65%;
+      background: color-mix(in srgb, #8ec3e2 75%, white);
+      animation: nd-evaporate linear both;
+      animation-duration: auto;
+      animation-timeline: --nd-spaces;
+    }
+
+    .nd-droplet:nth-child(1) { left: 10%; top: 34%; width: 14px; height: 18px; }
+    .nd-droplet:nth-child(2) { left: 22%; top: 46%; }
+    .nd-droplet:nth-child(3) { left: 16%; top: 58%; width: 10px; height: 13px; }
+    .nd-droplet:nth-child(4) { left: 30%; top: 38%; }
+    .nd-droplet:nth-child(5) { left: 8%; top: 50%; width: 9px; height: 12px; }
+    .nd-droplet:nth-child(6) { left: 26%; top: 64%; }
+    .nd-droplet:nth-child(7) { left: 36%; top: 52%; width: 11px; height: 14px; }
+
+    .nd-timeline::before {
+      animation: nd-draw linear both;
+      animation-timeline: view();
+      animation-range: entry 0% cover 62%;
+    }
+
+    .nd-tl {
+      animation: nd-arrive linear both;
+      animation-timeline: view();
+    }
+
+    @media (min-width: 768px) {
+      .nd-story-how { height: 280vh; }
+      .nd-story-spaces { height: 440vh; }
+
+      .nd-story-how .nd-story-pin,
+      .nd-story-spaces .nd-story-pin {
+        justify-content: center;
+        padding-top: 1.5rem;
+        padding-bottom: 1.5rem;
+      }
+
+      .nd-story-how .nd-pod-stage {
+        order: 0;
+      }
+
+      .nd-story-how .nd-device-wrap {
+        width: min(100%, 400px);
+      }
+
+      .nd-story-how .nd-how-layout {
+        grid-template-columns: 1fr 1fr;
+        gap: 2.5rem;
+      }
+
+      .nd-story-spaces .nd-scene {
+        grid-template-columns: 1.05fr 0.95fr;
+        align-items: center;
+        padding: 0 0 3rem 0.5rem;
+      }
+
+      .nd-meter {
+        bottom: 1.5rem;
+      }
+    }
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nd-hero-device,
+  .nd-fan,
+  .nd-press,
+  .nd-offer,
+  .nd-choice,
+  .nd-card,
+  .nd-buybar,
+  .nd-faq details[open] p,
+  .nd-pod-piece,
+  .nd-snap-ring,
+  .nd-mist,
+  .nd-meter-fill,
+  .nd-droplet,
+  .nd-tl,
+  .nd-timeline::before {
+    animation: none;
+    transition: none;
+  }
+
+  .nd-press:hover,
+  .nd-press:active,
+  .nd-offer:hover,
+  .nd-choice:hover,
+  .nd-card:hover {
+    transform: none;
+  }
+
+  .nd-story-how,
+  .nd-story-spaces {
+    height: auto;
+  }
+
+  .nd-story-pin {
+    position: static;
+    height: auto;
+    overflow: visible;
+  }
+
+  .nd-how-step,
+  .nd-story-spaces .nd-scene {
+    position: static;
+    opacity: 1;
+    transform: none;
+  }
+}

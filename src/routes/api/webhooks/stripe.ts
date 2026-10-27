@@ -8,6 +8,7 @@ import { translateStripeEvent } from '@/features/billing/entitlement'
 import { constructSponsorEvent } from '@/features/sponsor/sponsor.stripe'
 import { translateSponsorEvent, isExclusiveSponsorEvent } from '@/features/sponsor/webhook'
 import { applySponsorEvent } from '@/features/sponsor/sponsor.server'
+import { applyShopStripeEvent, shouldHandleShopEvent } from '@/features/shop/orders.server'
 
 const handler = async ({ request }: { request: Request }) => {
   const rawBody = await request.text()
@@ -40,6 +41,22 @@ const handler = async ({ request }: { request: Request }) => {
   // provider's idempotent cancel into apply (env keys are present, or the signature
   // verification above could not have succeeded).
   const provider = createStripeProvider(env)
+
+  // Store checkouts share this endpoint. Handle them before SaaS billing so a
+  // device purchase cannot grant lifetime Pro.
+  if (await shouldHandleShopEvent(db, event)) {
+    try {
+      await applyShopStripeEvent(db, event, Date.now(), {
+        origin: new URL(env.BETTER_AUTH_URL).origin,
+        cancelSubscription: (id) => provider.cancelSubscription(id),
+      })
+    } catch (err) {
+      console.error('[shop] webhook handling failed', err)
+      return new Response('error', { status: 500 })
+    }
+    return new Response('ok', { status: 200 })
+  }
+
   const status = await handleWebhook(
     db,
     async () => translateStripeEvent(event),   // reuse verified event, no re-parse

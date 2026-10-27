@@ -645,6 +645,8 @@ describe('15. startCheckout rejects already-subscribed users', () => {
     createPortalSession: async () => ({ url: 'https://portal.example' }),
     parseWebhook: async () => ({ type: 'ignored', eventId: 'x' }),
     cancelSubscription: async () => {},
+    manageSubscription: async () => ({ status: 'active', cancelAtPeriodEnd: false, currentPeriodEnd: null, pauseResumesAt: null }),
+    retrieveCheckoutSession: async () => null,
   }
 
   test('active Pro subscriber → throws instead of creating a second concurrent subscription', async () => {

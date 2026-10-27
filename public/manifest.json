@@ -1,6 +1,6 @@
 {
-  "short_name": "FlareStarter",
-  "name": "FlareStarter — Cloudflare-native SaaS starter",
+  "short_name": "Nookdry",
+  "name": "Nookdry — cordless dehumidifier",
   "icons": [
     {
       "src": "favicon.ico",
@@ -20,6 +20,6 @@
   ],
   "start_url": ".",
   "display": "standalone",
-  "theme_color": "#e2531c",
-  "background_color": "#0a0a0a"
+  "theme_color": "#1f6a52",
+  "background_color": "#f4efe7"
 }

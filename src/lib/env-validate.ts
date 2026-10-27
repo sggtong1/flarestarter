@@ -39,6 +39,13 @@ const envSchema = z
     STRIPE_PRICE_PRO_MONTHLY: optional,
     STRIPE_PRICE_PRO_YEARLY: optional,
     STRIPE_PRICE_PRO_LIFETIME: optional,
+    STRIPE_PRICE_NOOKDRY_DEVICE: optional,
+    STRIPE_PRICE_NOOKDRY_PODS_1: optional,
+    STRIPE_PRICE_NOOKDRY_PODS_3: optional,
+    STRIPE_PRICE_NOOKDRY_PODS_6: optional,
+    STRIPE_PRICE_NOOKDRY_SUB_1: optional,
+    STRIPE_PRICE_NOOKDRY_SUB_2: optional,
+    STRIPE_PRICE_NOOKDRY_SUB_3: optional,
     // Kill switch for WeChat Pay on sponsorships — see features/sponsor/sponsor.config.ts.
     STRIPE_WECHAT_PAY_ENABLED: optional,
     ADMIN_EMAILS: optional,

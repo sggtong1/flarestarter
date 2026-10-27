@@ -129,6 +129,13 @@ function AccountPage() {
           </form>
         </Section>
 
+        <Section title={t('shop.accountOrders')}>
+          <Link to="/{-$locale}/app/orders" className={buttonVariants({ variant: 'outline' })}>
+            {t('shop.openOrders')}
+          </Link>
+          <p className="mt-2 text-[13.5px] text-fg-2">{t('shop.openOrdersSub')}</p>
+        </Section>
+
         <Section title={t('billing.currentPlan')}>
           <ManageSubscription plan={ent.plan} status={ent.status} currentPeriodEnd={ent.currentPeriodEnd} lifetime={ent.lifetime} />
         </Section>
