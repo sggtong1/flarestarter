@@ -1,5 +1,6 @@
 import type { CSSProperties, ReactNode } from 'react'
 import { Link } from '@tanstack/react-router'
+import '../storefront.css'
 import { productConfig } from '@/features/shop/product.config'
 import { useTranslation } from '@/features/i18n/provider'
 
@@ -22,6 +23,7 @@ export function brandStyle(): CSSProperties {
     ['--border-strong' as string]: c.lineStrong,
     ['--soft' as string]: c.accentSoft,
     ['--ring' as string]: c.accent,
+    ['--clay' as string]: c.clay,
   }
 }
 
@@ -80,7 +82,7 @@ export function StoreShell({
               {t('auth.login')}
             </Link>
           )}
-          <Link to="/{-$locale}" hash="buy" className="rounded-full px-4 py-2 text-sm font-semibold" style={{ background: 'var(--primary)', color: 'var(--primary-foreground)' }}>
+          <Link to="/{-$locale}" hash="buy" className="nd-press rounded-full px-4 py-2 text-sm font-semibold" style={{ background: 'var(--primary)', color: 'var(--primary-foreground)' }}>
             {t('shop.buy')}
           </Link>
         </nav>

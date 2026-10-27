@@ -37,7 +37,7 @@ export function BuyBox({
   const unit = selection.frequencyMonths === 1 ? t('shop.month') : t('shop.months')
 
   return (
-    <div id="buy" className="rounded-3xl border p-4 md:p-6" style={{ background: 'var(--card)', borderColor: 'var(--border)' }}>
+    <div id="buy" className="nd-buybox rounded-3xl border p-4 md:p-6" style={{ background: 'var(--card)', borderColor: 'var(--border)' }}>
       <div className="grid gap-2">
         <OfferButton
           pressed={selection.kind === 'bundle'}
@@ -102,7 +102,7 @@ export function BuyBox({
         <div className="flex items-center gap-3">
           <button
             type="button"
-            className="h-10 w-10 rounded-full border text-lg"
+            className="nd-press h-10 w-10 rounded-full border text-lg"
             style={{ borderColor: 'var(--border-strong)' }}
             aria-label={t('shop.qtyDecrease')}
             disabled={busy || selection.quantity <= 1}
@@ -113,7 +113,7 @@ export function BuyBox({
           <span className="w-6 text-center font-semibold tabular-nums" aria-live="polite">{selection.quantity}</span>
           <button
             type="button"
-            className="h-10 w-10 rounded-full border text-lg"
+            className="nd-press h-10 w-10 rounded-full border text-lg"
             style={{ borderColor: 'var(--border-strong)' }}
             aria-label={t('shop.qtyIncrease')}
             disabled={busy || selection.quantity >= MAX_QUANTITY}
@@ -168,7 +168,7 @@ function OfferButton({
       type="button"
       aria-pressed={pressed}
       onClick={onClick}
-      className="rounded-2xl border px-4 py-3 text-left transition-colors"
+      className="nd-offer rounded-2xl border px-4 py-3 text-left"
       style={{
         borderColor: pressed ? 'var(--primary)' : 'var(--border)',
         background: pressed ? 'var(--soft)' : 'transparent',
@@ -203,7 +203,7 @@ function Choice({
       type="button"
       aria-pressed={pressed}
       onClick={onClick}
-      className="rounded-xl border px-2 py-2 text-center"
+      className="nd-choice rounded-xl border px-2 py-2 text-center"
       style={{
         borderColor: pressed ? 'var(--primary)' : 'var(--border)',
         background: pressed ? 'var(--soft)' : 'transparent',

@@ -124,9 +124,9 @@ export const productConfig = {
     problemLede:
       'A whole-room dehumidifier is the wrong tool for a closet. Disposable tubs go stale, spill, and still leave the corner musty.',
     problems: [
-      { title: 'Musty closets', body: 'Clothes hold yesterday’s humidity. The door stays shut, so the smell has nowhere to go.' },
-      { title: 'Cabinets and drawers', body: 'Under-sink wood, linen drawers, and entry shoe cabinets grow a film you only notice when you reach in.' },
-      { title: 'Cars and RVs', body: 'A parked cabin sweats overnight. Seats, headliners, and RV cupboards take on that damp, closed-up smell.' },
+      { id: 'closet', title: 'Musty closets', body: 'Clothes hold yesterday’s humidity. The door stays shut, so the smell has nowhere to go.' },
+      { id: 'cabinet', title: 'Cabinets and drawers', body: 'Under-sink wood, linen drawers, and entry shoe cabinets grow a film you only notice when you reach in.' },
+      { id: 'car', title: 'Cars and RVs', body: 'A parked cabin sweats overnight. Seats, headliners, and RV cupboards take on that damp, closed-up smell.' },
     ],
     howKicker: 'How it works',
     howTitle: 'Set it down. Swap a pod. That is the whole product.',
@@ -137,13 +137,14 @@ export const productConfig = {
     ],
     scenesKicker: 'Where it sits',
     scenesTitle: 'Built for the nooks, not the living room.',
+    /** `id` picks the illustrated vignette. Keep it when you rewrite the sentence. */
     scenes: [
-      { title: 'Closets', body: 'Coats, linens, and the corner behind the suitcase.' },
-      { title: 'Cabinets', body: 'Under the sink, the bathroom vanity, the hall cupboard.' },
-      { title: 'Drawers', body: 'A single drawer of wool, cameras, or papers.' },
-      { title: 'Entryways', body: 'Wet shoes and the cabinet they live in.' },
-      { title: 'Cars', body: 'A cabin that sits closed all week.' },
-      { title: 'RVs', body: 'Cupboards and berths between trips.' },
+      { id: 'closet', title: 'Closets', body: 'Coats, linens, and the corner behind the suitcase.' },
+      { id: 'cabinet', title: 'Cabinets', body: 'Under the sink, the bathroom vanity, the hall cupboard.' },
+      { id: 'drawer', title: 'Drawers', body: 'A single drawer of wool, cameras, or papers.' },
+      { id: 'entryway', title: 'Entryways', body: 'Wet shoes and the cabinet they live in.' },
+      { id: 'car', title: 'Cars', body: 'A cabin that sits closed all week.' },
+      { id: 'rv', title: 'RVs', body: 'Cupboards and berths between trips.' },
     ],
     specsKicker: 'Specs',
     specsTitle: 'Small on purpose.',
