@@ -1,4 +1,5 @@
 import type Stripe from 'stripe'
+import { isShopPurpose } from '@/features/shop/purpose'
 
 export type Plan = 'free' | 'pro'
 export interface Entitlement { plan: Plan; status: string; isActive: boolean; currentPeriodEnd: number | null; lifetime: boolean; paymentFailed: boolean }
@@ -47,6 +48,8 @@ export function translateStripeEvent(event: Stripe.Event): DomainEvent {
     case 'customer.subscription.created':
     case 'customer.subscription.updated': {
       const sub = event.data.object as Stripe.Subscription
+      // Store refill subscriptions share the Stripe customer. They must not flip SaaS Pro.
+      if (isShopPurpose(sub.metadata)) return { type: 'ignored', eventId: event.id }
       const item = sub.items.data[0]
       return {
         type: 'subscription.upserted',
@@ -62,11 +65,13 @@ export function translateStripeEvent(event: Stripe.Event): DomainEvent {
     }
     case 'customer.subscription.deleted': {
       const sub = event.data.object as Stripe.Subscription
+      if (isShopPurpose(sub.metadata)) return { type: 'ignored', eventId: event.id }
       return { type: 'subscription.deleted', eventId: event.id, customerId: String(sub.customer), subscriptionId: sub.id, occurredAt: event.created * 1000 }
     }
     case 'checkout.session.completed':
     case 'checkout.session.async_payment_succeeded': {
       const s = event.data.object as Stripe.Checkout.Session
+      if (isShopPurpose(s.metadata)) return { type: 'ignored', eventId: event.id }
       if (s.mode !== 'payment') return { type: 'ignored', eventId: event.id } // subscription checkout handled via subscription.created
       // 延迟到账支付（ACH/SEPA 等）：completed 时 payment_status 仍是 unpaid，未到账不授终身
       // Pro——到账后 Stripe 会重放为 async_payment_succeeded（走同一翻译）；扣款失败则只有
@@ -79,6 +84,7 @@ export function translateStripeEvent(event: Stripe.Event): DomainEvent {
     }
     case 'charge.refunded': {
       const c = event.data.object as Stripe.Charge
+      if (isShopPurpose(c.metadata)) return { type: 'ignored', eventId: event.id }
       if (!c.refunded && c.amount_refunded !== c.amount) return { type: 'ignored', eventId: event.id } // partial refund → ignore
       const pi = typeof c.payment_intent === 'string' ? c.payment_intent : (c.payment_intent?.id ?? null)
       return { type: 'purchase.refunded', eventId: event.id, customerId: String(c.customer), paymentIntentId: pi }
@@ -86,7 +92,13 @@ export function translateStripeEvent(event: Stripe.Event): DomainEvent {
     case 'invoice.payment_failed': {
       // 续费扣款失败：发出领域信号，供 app 内提示用户更新支付方式。
       // 重试邮件本身交给 Stripe 的 Smart Retries / Revenue Recovery（见 docs/billing.md）。
-      const inv = event.data.object as Stripe.Invoice
+      const inv = event.data.object as Stripe.Invoice & {
+        subscription_details?: { metadata?: { purpose?: string } | null } | null
+        parent?: { subscription_details?: { metadata?: { purpose?: string } | null } | null } | null
+      }
+      if (isShopPurpose(inv.metadata) || isShopPurpose(inv.subscription_details?.metadata) || isShopPurpose(inv.parent?.subscription_details?.metadata)) {
+        return { type: 'ignored', eventId: event.id }
+      }
       return { type: 'payment.failed', eventId: event.id, customerId: String(inv.customer), occurredAt: event.created * 1000 }
     }
     default:

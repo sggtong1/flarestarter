@@ -20,6 +20,7 @@ import { Route as Char123LocaleChar125TermsRouteImport } from './routes/{-$local
 import { Route as Char123LocaleChar125SponsorRouteImport } from './routes/{-$locale}/sponsor'
 import { Route as Char123LocaleChar125PrivacyRouteImport } from './routes/{-$locale}/privacy'
 import { Route as Char123LocaleChar125PricingRouteImport } from './routes/{-$locale}/pricing'
+import { Route as Char123LocaleChar125CheckoutRouteImport } from './routes/{-$locale}/checkout'
 import { Route as Char123LocaleChar125ChangelogRouteImport } from './routes/{-$locale}/changelog'
 import { Route as DocsSplatRouteImport } from './routes/docs/$'
 import { Route as DocsMdSplatRouteImport } from './routes/docs-md/$'
@@ -29,12 +30,15 @@ import { Route as AdminSponsorsDotcsvRouteImport } from './routes/admin/sponsors
 import { Route as Char123LocaleChar125AdminRouteRouteImport } from './routes/{-$locale}/admin/route'
 import { Route as Char123LocaleChar125AppIndexRouteImport } from './routes/{-$locale}/app/index'
 import { Route as Char123LocaleChar125AdminIndexRouteImport } from './routes/{-$locale}/admin/index'
+import { Route as Char123LocaleChar125OrderConfirmationRouteImport } from './routes/{-$locale}/order/confirmation'
 import { Route as Char123LocaleChar125AppProRouteImport } from './routes/{-$locale}/app/pro'
+import { Route as Char123LocaleChar125AppOrdersRouteImport } from './routes/{-$locale}/app/orders'
 import { Route as Char123LocaleChar125AppFeedbackRouteImport } from './routes/{-$locale}/app/feedback'
 import { Route as Char123LocaleChar125AppAccountRouteImport } from './routes/{-$locale}/app/account'
 import { Route as Char123LocaleChar125AdminWaitlistRouteImport } from './routes/{-$locale}/admin/waitlist'
 import { Route as Char123LocaleChar125AdminUsersRouteImport } from './routes/{-$locale}/admin/users'
 import { Route as Char123LocaleChar125AdminSponsorsRouteImport } from './routes/{-$locale}/admin/sponsors'
+import { Route as Char123LocaleChar125AdminOrdersRouteImport } from './routes/{-$locale}/admin/orders'
 import { Route as Char123LocaleChar125AdminFeedbackRouteImport } from './routes/{-$locale}/admin/feedback'
 import { Route as Char123LocaleChar125authVerifyEmailRouteImport } from './routes/{-$locale}/(auth)/verify-email'
 import { Route as Char123LocaleChar125authResetPasswordRouteImport } from './routes/{-$locale}/(auth)/reset-password'
@@ -107,6 +111,12 @@ const Char123LocaleChar125PricingRoute =
     path: '/pricing',
     getParentRoute: () => Char123LocaleChar125RouteRoute,
   } as any)
+const Char123LocaleChar125CheckoutRoute =
+  Char123LocaleChar125CheckoutRouteImport.update({
+    id: '/checkout',
+    path: '/checkout',
+    getParentRoute: () => Char123LocaleChar125RouteRoute,
+  } as any)
 const Char123LocaleChar125ChangelogRoute =
   Char123LocaleChar125ChangelogRouteImport.update({
     id: '/changelog',
@@ -156,10 +166,22 @@ const Char123LocaleChar125AdminIndexRoute =
     path: '/',
     getParentRoute: () => Char123LocaleChar125AdminRouteRoute,
   } as any)
+const Char123LocaleChar125OrderConfirmationRoute =
+  Char123LocaleChar125OrderConfirmationRouteImport.update({
+    id: '/order/confirmation',
+    path: '/order/confirmation',
+    getParentRoute: () => Char123LocaleChar125RouteRoute,
+  } as any)
 const Char123LocaleChar125AppProRoute =
   Char123LocaleChar125AppProRouteImport.update({
     id: '/app/pro',
     path: '/app/pro',
+    getParentRoute: () => Char123LocaleChar125RouteRoute,
+  } as any)
+const Char123LocaleChar125AppOrdersRoute =
+  Char123LocaleChar125AppOrdersRouteImport.update({
+    id: '/app/orders',
+    path: '/app/orders',
     getParentRoute: () => Char123LocaleChar125RouteRoute,
   } as any)
 const Char123LocaleChar125AppFeedbackRoute =
@@ -190,6 +212,12 @@ const Char123LocaleChar125AdminSponsorsRoute =
   Char123LocaleChar125AdminSponsorsRouteImport.update({
     id: '/sponsors',
     path: '/sponsors',
+    getParentRoute: () => Char123LocaleChar125AdminRouteRoute,
+  } as any)
+const Char123LocaleChar125AdminOrdersRoute =
+  Char123LocaleChar125AdminOrdersRouteImport.update({
+    id: '/orders',
+    path: '/orders',
     getParentRoute: () => Char123LocaleChar125AdminRouteRoute,
   } as any)
 const Char123LocaleChar125AdminFeedbackRoute =
@@ -257,6 +285,7 @@ export interface FileRoutesByFullPath {
   '/docs-md/$': typeof DocsMdSplatRoute
   '/docs/$': typeof DocsSplatRoute
   '/{-$locale}/changelog': typeof Char123LocaleChar125ChangelogRoute
+  '/{-$locale}/checkout': typeof Char123LocaleChar125CheckoutRoute
   '/{-$locale}/pricing': typeof Char123LocaleChar125PricingRoute
   '/{-$locale}/privacy': typeof Char123LocaleChar125PrivacyRoute
   '/{-$locale}/sponsor': typeof Char123LocaleChar125SponsorRoute
@@ -272,12 +301,15 @@ export interface FileRoutesByFullPath {
   '/{-$locale}/reset-password': typeof Char123LocaleChar125authResetPasswordRoute
   '/{-$locale}/verify-email': typeof Char123LocaleChar125authVerifyEmailRoute
   '/{-$locale}/admin/feedback': typeof Char123LocaleChar125AdminFeedbackRoute
+  '/{-$locale}/admin/orders': typeof Char123LocaleChar125AdminOrdersRoute
   '/{-$locale}/admin/sponsors': typeof Char123LocaleChar125AdminSponsorsRoute
   '/{-$locale}/admin/users': typeof Char123LocaleChar125AdminUsersRoute
   '/{-$locale}/admin/waitlist': typeof Char123LocaleChar125AdminWaitlistRoute
   '/{-$locale}/app/account': typeof Char123LocaleChar125AppAccountRoute
   '/{-$locale}/app/feedback': typeof Char123LocaleChar125AppFeedbackRoute
+  '/{-$locale}/app/orders': typeof Char123LocaleChar125AppOrdersRoute
   '/{-$locale}/app/pro': typeof Char123LocaleChar125AppProRoute
+  '/{-$locale}/order/confirmation': typeof Char123LocaleChar125OrderConfirmationRoute
   '/{-$locale}/admin/': typeof Char123LocaleChar125AdminIndexRoute
   '/{-$locale}/app/': typeof Char123LocaleChar125AppIndexRoute
 }
@@ -292,6 +324,7 @@ export interface FileRoutesByTo {
   '/docs-md/$': typeof DocsMdSplatRoute
   '/docs/$': typeof DocsSplatRoute
   '/{-$locale}/changelog': typeof Char123LocaleChar125ChangelogRoute
+  '/{-$locale}/checkout': typeof Char123LocaleChar125CheckoutRoute
   '/{-$locale}/pricing': typeof Char123LocaleChar125PricingRoute
   '/{-$locale}/privacy': typeof Char123LocaleChar125PrivacyRoute
   '/{-$locale}/sponsor': typeof Char123LocaleChar125SponsorRoute
@@ -307,12 +340,15 @@ export interface FileRoutesByTo {
   '/{-$locale}/reset-password': typeof Char123LocaleChar125authResetPasswordRoute
   '/{-$locale}/verify-email': typeof Char123LocaleChar125authVerifyEmailRoute
   '/{-$locale}/admin/feedback': typeof Char123LocaleChar125AdminFeedbackRoute
+  '/{-$locale}/admin/orders': typeof Char123LocaleChar125AdminOrdersRoute
   '/{-$locale}/admin/sponsors': typeof Char123LocaleChar125AdminSponsorsRoute
   '/{-$locale}/admin/users': typeof Char123LocaleChar125AdminUsersRoute
   '/{-$locale}/admin/waitlist': typeof Char123LocaleChar125AdminWaitlistRoute
   '/{-$locale}/app/account': typeof Char123LocaleChar125AppAccountRoute
   '/{-$locale}/app/feedback': typeof Char123LocaleChar125AppFeedbackRoute
+  '/{-$locale}/app/orders': typeof Char123LocaleChar125AppOrdersRoute
   '/{-$locale}/app/pro': typeof Char123LocaleChar125AppProRoute
+  '/{-$locale}/order/confirmation': typeof Char123LocaleChar125OrderConfirmationRoute
   '/{-$locale}/admin': typeof Char123LocaleChar125AdminIndexRoute
   '/{-$locale}/app': typeof Char123LocaleChar125AppIndexRoute
 }
@@ -330,6 +366,7 @@ export interface FileRoutesById {
   '/docs-md/$': typeof DocsMdSplatRoute
   '/docs/$': typeof DocsSplatRoute
   '/{-$locale}/changelog': typeof Char123LocaleChar125ChangelogRoute
+  '/{-$locale}/checkout': typeof Char123LocaleChar125CheckoutRoute
   '/{-$locale}/pricing': typeof Char123LocaleChar125PricingRoute
   '/{-$locale}/privacy': typeof Char123LocaleChar125PrivacyRoute
   '/{-$locale}/sponsor': typeof Char123LocaleChar125SponsorRoute
@@ -345,12 +382,15 @@ export interface FileRoutesById {
   '/{-$locale}/(auth)/reset-password': typeof Char123LocaleChar125authResetPasswordRoute
   '/{-$locale}/(auth)/verify-email': typeof Char123LocaleChar125authVerifyEmailRoute
   '/{-$locale}/admin/feedback': typeof Char123LocaleChar125AdminFeedbackRoute
+  '/{-$locale}/admin/orders': typeof Char123LocaleChar125AdminOrdersRoute
   '/{-$locale}/admin/sponsors': typeof Char123LocaleChar125AdminSponsorsRoute
   '/{-$locale}/admin/users': typeof Char123LocaleChar125AdminUsersRoute
   '/{-$locale}/admin/waitlist': typeof Char123LocaleChar125AdminWaitlistRoute
   '/{-$locale}/app/account': typeof Char123LocaleChar125AppAccountRoute
   '/{-$locale}/app/feedback': typeof Char123LocaleChar125AppFeedbackRoute
+  '/{-$locale}/app/orders': typeof Char123LocaleChar125AppOrdersRoute
   '/{-$locale}/app/pro': typeof Char123LocaleChar125AppProRoute
+  '/{-$locale}/order/confirmation': typeof Char123LocaleChar125OrderConfirmationRoute
   '/{-$locale}/admin/': typeof Char123LocaleChar125AdminIndexRoute
   '/{-$locale}/app/': typeof Char123LocaleChar125AppIndexRoute
 }
@@ -369,6 +409,7 @@ export interface FileRouteTypes {
     | '/docs-md/$'
     | '/docs/$'
     | '/{-$locale}/changelog'
+    | '/{-$locale}/checkout'
     | '/{-$locale}/pricing'
     | '/{-$locale}/privacy'
     | '/{-$locale}/sponsor'
@@ -384,12 +425,15 @@ export interface FileRouteTypes {
     | '/{-$locale}/reset-password'
     | '/{-$locale}/verify-email'
     | '/{-$locale}/admin/feedback'
+    | '/{-$locale}/admin/orders'
     | '/{-$locale}/admin/sponsors'
     | '/{-$locale}/admin/users'
     | '/{-$locale}/admin/waitlist'
     | '/{-$locale}/app/account'
     | '/{-$locale}/app/feedback'
+    | '/{-$locale}/app/orders'
     | '/{-$locale}/app/pro'
+    | '/{-$locale}/order/confirmation'
     | '/{-$locale}/admin/'
     | '/{-$locale}/app/'
   fileRoutesByTo: FileRoutesByTo
@@ -404,6 +448,7 @@ export interface FileRouteTypes {
     | '/docs-md/$'
     | '/docs/$'
     | '/{-$locale}/changelog'
+    | '/{-$locale}/checkout'
     | '/{-$locale}/pricing'
     | '/{-$locale}/privacy'
     | '/{-$locale}/sponsor'
@@ -419,12 +464,15 @@ export interface FileRouteTypes {
     | '/{-$locale}/reset-password'
     | '/{-$locale}/verify-email'
     | '/{-$locale}/admin/feedback'
+    | '/{-$locale}/admin/orders'
     | '/{-$locale}/admin/sponsors'
     | '/{-$locale}/admin/users'
     | '/{-$locale}/admin/waitlist'
     | '/{-$locale}/app/account'
     | '/{-$locale}/app/feedback'
+    | '/{-$locale}/app/orders'
     | '/{-$locale}/app/pro'
+    | '/{-$locale}/order/confirmation'
     | '/{-$locale}/admin'
     | '/{-$locale}/app'
   id:
@@ -441,6 +489,7 @@ export interface FileRouteTypes {
     | '/docs-md/$'
     | '/docs/$'
     | '/{-$locale}/changelog'
+    | '/{-$locale}/checkout'
     | '/{-$locale}/pricing'
     | '/{-$locale}/privacy'
     | '/{-$locale}/sponsor'
@@ -456,12 +505,15 @@ export interface FileRouteTypes {
     | '/{-$locale}/(auth)/reset-password'
     | '/{-$locale}/(auth)/verify-email'
     | '/{-$locale}/admin/feedback'
+    | '/{-$locale}/admin/orders'
     | '/{-$locale}/admin/sponsors'
     | '/{-$locale}/admin/users'
     | '/{-$locale}/admin/waitlist'
     | '/{-$locale}/app/account'
     | '/{-$locale}/app/feedback'
+    | '/{-$locale}/app/orders'
     | '/{-$locale}/app/pro'
+    | '/{-$locale}/order/confirmation'
     | '/{-$locale}/admin/'
     | '/{-$locale}/app/'
   fileRoutesById: FileRoutesById
@@ -561,6 +613,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof Char123LocaleChar125PricingRouteImport
       parentRoute: typeof Char123LocaleChar125RouteRoute
     }
+    '/{-$locale}/checkout': {
+      id: '/{-$locale}/checkout'
+      path: '/checkout'
+      fullPath: '/{-$locale}/checkout'
+      preLoaderRoute: typeof Char123LocaleChar125CheckoutRouteImport
+      parentRoute: typeof Char123LocaleChar125RouteRoute
+    }
     '/{-$locale}/changelog': {
       id: '/{-$locale}/changelog'
       path: '/changelog'
@@ -624,11 +683,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof Char123LocaleChar125AdminIndexRouteImport
       parentRoute: typeof Char123LocaleChar125AdminRouteRoute
     }
+    '/{-$locale}/order/confirmation': {
+      id: '/{-$locale}/order/confirmation'
+      path: '/order/confirmation'
+      fullPath: '/{-$locale}/order/confirmation'
+      preLoaderRoute: typeof Char123LocaleChar125OrderConfirmationRouteImport
+      parentRoute: typeof Char123LocaleChar125RouteRoute
+    }
     '/{-$locale}/app/pro': {
       id: '/{-$locale}/app/pro'
       path: '/app/pro'
       fullPath: '/{-$locale}/app/pro'
       preLoaderRoute: typeof Char123LocaleChar125AppProRouteImport
+      parentRoute: typeof Char123LocaleChar125RouteRoute
+    }
+    '/{-$locale}/app/orders': {
+      id: '/{-$locale}/app/orders'
+      path: '/app/orders'
+      fullPath: '/{-$locale}/app/orders'
+      preLoaderRoute: typeof Char123LocaleChar125AppOrdersRouteImport
       parentRoute: typeof Char123LocaleChar125RouteRoute
     }
     '/{-$locale}/app/feedback': {
@@ -664,6 +737,13 @@ declare module '@tanstack/react-router' {
       path: '/sponsors'
       fullPath: '/{-$locale}/admin/sponsors'
       preLoaderRoute: typeof Char123LocaleChar125AdminSponsorsRouteImport
+      parentRoute: typeof Char123LocaleChar125AdminRouteRoute
+    }
+    '/{-$locale}/admin/orders': {
+      id: '/{-$locale}/admin/orders'
+      path: '/orders'
+      fullPath: '/{-$locale}/admin/orders'
+      preLoaderRoute: typeof Char123LocaleChar125AdminOrdersRouteImport
       parentRoute: typeof Char123LocaleChar125AdminRouteRoute
     }
     '/{-$locale}/admin/feedback': {
@@ -734,6 +814,7 @@ declare module '@tanstack/react-router' {
 
 interface Char123LocaleChar125AdminRouteRouteChildren {
   Char123LocaleChar125AdminFeedbackRoute: typeof Char123LocaleChar125AdminFeedbackRoute
+  Char123LocaleChar125AdminOrdersRoute: typeof Char123LocaleChar125AdminOrdersRoute
   Char123LocaleChar125AdminSponsorsRoute: typeof Char123LocaleChar125AdminSponsorsRoute
   Char123LocaleChar125AdminUsersRoute: typeof Char123LocaleChar125AdminUsersRoute
   Char123LocaleChar125AdminWaitlistRoute: typeof Char123LocaleChar125AdminWaitlistRoute
@@ -744,6 +825,7 @@ const Char123LocaleChar125AdminRouteRouteChildren: Char123LocaleChar125AdminRout
   {
     Char123LocaleChar125AdminFeedbackRoute:
       Char123LocaleChar125AdminFeedbackRoute,
+    Char123LocaleChar125AdminOrdersRoute: Char123LocaleChar125AdminOrdersRoute,
     Char123LocaleChar125AdminSponsorsRoute:
       Char123LocaleChar125AdminSponsorsRoute,
     Char123LocaleChar125AdminUsersRoute: Char123LocaleChar125AdminUsersRoute,
@@ -760,6 +842,7 @@ const Char123LocaleChar125AdminRouteRouteWithChildren =
 interface Char123LocaleChar125RouteRouteChildren {
   Char123LocaleChar125AdminRouteRoute: typeof Char123LocaleChar125AdminRouteRouteWithChildren
   Char123LocaleChar125ChangelogRoute: typeof Char123LocaleChar125ChangelogRoute
+  Char123LocaleChar125CheckoutRoute: typeof Char123LocaleChar125CheckoutRoute
   Char123LocaleChar125PricingRoute: typeof Char123LocaleChar125PricingRoute
   Char123LocaleChar125PrivacyRoute: typeof Char123LocaleChar125PrivacyRoute
   Char123LocaleChar125SponsorRoute: typeof Char123LocaleChar125SponsorRoute
@@ -773,7 +856,9 @@ interface Char123LocaleChar125RouteRouteChildren {
   Char123LocaleChar125authVerifyEmailRoute: typeof Char123LocaleChar125authVerifyEmailRoute
   Char123LocaleChar125AppAccountRoute: typeof Char123LocaleChar125AppAccountRoute
   Char123LocaleChar125AppFeedbackRoute: typeof Char123LocaleChar125AppFeedbackRoute
+  Char123LocaleChar125AppOrdersRoute: typeof Char123LocaleChar125AppOrdersRoute
   Char123LocaleChar125AppProRoute: typeof Char123LocaleChar125AppProRoute
+  Char123LocaleChar125OrderConfirmationRoute: typeof Char123LocaleChar125OrderConfirmationRoute
   Char123LocaleChar125AppIndexRoute: typeof Char123LocaleChar125AppIndexRoute
 }
 
@@ -782,6 +867,7 @@ const Char123LocaleChar125RouteRouteChildren: Char123LocaleChar125RouteRouteChil
     Char123LocaleChar125AdminRouteRoute:
       Char123LocaleChar125AdminRouteRouteWithChildren,
     Char123LocaleChar125ChangelogRoute: Char123LocaleChar125ChangelogRoute,
+    Char123LocaleChar125CheckoutRoute: Char123LocaleChar125CheckoutRoute,
     Char123LocaleChar125PricingRoute: Char123LocaleChar125PricingRoute,
     Char123LocaleChar125PrivacyRoute: Char123LocaleChar125PrivacyRoute,
     Char123LocaleChar125SponsorRoute: Char123LocaleChar125SponsorRoute,
@@ -799,7 +885,10 @@ const Char123LocaleChar125RouteRouteChildren: Char123LocaleChar125RouteRouteChil
       Char123LocaleChar125authVerifyEmailRoute,
     Char123LocaleChar125AppAccountRoute: Char123LocaleChar125AppAccountRoute,
     Char123LocaleChar125AppFeedbackRoute: Char123LocaleChar125AppFeedbackRoute,
+    Char123LocaleChar125AppOrdersRoute: Char123LocaleChar125AppOrdersRoute,
     Char123LocaleChar125AppProRoute: Char123LocaleChar125AppProRoute,
+    Char123LocaleChar125OrderConfirmationRoute:
+      Char123LocaleChar125OrderConfirmationRoute,
     Char123LocaleChar125AppIndexRoute: Char123LocaleChar125AppIndexRoute,
   }
 

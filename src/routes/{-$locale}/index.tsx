@@ -2,14 +2,9 @@ import { createFileRoute, getRouteApi } from '@tanstack/react-router'
 import { localeHead } from '@/features/seo/seo'
 import { getOrigin } from '@/features/seo/seo.fns'
 import type { Locale } from '@/features/i18n/locale'
-import { SiteNav } from '@/components/marketing/site-nav'
-import { Hero } from '@/components/marketing/hero'
-import { TechStrip } from '@/components/marketing/tech-strip'
-import { Features } from '@/components/marketing/features'
-import { FeatureGrid } from '@/components/marketing/feature-grid'
-import { AgentSection } from '@/components/marketing/agent-section'
-import { CTA } from '@/components/marketing/cta'
-import { Footer } from '@/components/marketing/footer'
+import { productConfig } from '@/features/shop/product.config'
+import { storeJsonLd } from '@/features/shop/jsonld'
+import { Landing } from '@/features/shop/components/landing'
 
 const rootRoute = getRouteApi('__root__')
 
@@ -18,35 +13,31 @@ export const Route = createFileRoute('/{-$locale}/')({
   head: ({ loaderData, params }) => {
     const origin = loaderData?.origin ?? ''
     const locale = ((params as { locale?: string }).locale ?? 'en') as Locale
-    const { meta, links } = localeHead({
-      origin,
-      locale,
-      path: '/',
-      title: 'FlareStarter',
-      description:
-        locale === 'zh'
-          ? 'FlareStarter——Cloudflare 原生的 SaaS 起步模板。克隆即用，部署到 Workers。'
-          : 'FlareStarter — the Cloudflare-native SaaS starter. Clone it and ship on Workers.',
-    })
-    return { meta, links }
+    const title = productConfig.seo.title
+    const description = productConfig.seo.description
+    const { meta, links } = localeHead({ origin, locale, path: '/', title, description })
+    const image = `${origin}${productConfig.seo.ogImage}`
+    const nextMeta = meta.map((item) => (item.property === 'og:image' ? { ...item, content: image } : item))
+    nextMeta.push(
+      { property: 'og:type', content: 'website' },
+      { property: 'og:site_name', content: productConfig.brand.name },
+      { name: 'twitter:title', content: title },
+      { name: 'twitter:description', content: description },
+      { name: 'twitter:image', content: image },
+    )
+    return { meta: nextMeta, links }
   },
   component: Home,
 })
 
 function Home() {
-  const { theme, user } = rootRoute.useLoaderData()
-  const loggedIn = !!user
-
+  const { user } = rootRoute.useLoaderData()
+  const { origin } = Route.useLoaderData()
+  const jsonLd = JSON.stringify(storeJsonLd(origin)).replace(/</g, '\\u003c')
   return (
-    <div className="min-h-screen bg-background text-foreground">
-      <SiteNav theme={theme} loggedIn={loggedIn} />
-      <Hero loggedIn={loggedIn} />
-      <TechStrip />
-      <Features />
-      <FeatureGrid />
-      <AgentSection />
-      <CTA loggedIn={loggedIn} />
-      <Footer theme={theme} />
-    </div>
+    <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd }} />
+      <Landing loggedIn={!!user} />
+    </>
   )
 }

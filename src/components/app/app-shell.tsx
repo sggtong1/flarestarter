@@ -1,6 +1,7 @@
 import { useEffect, useState, type ReactNode } from 'react'
 import { Link, getRouteApi } from '@tanstack/react-router'
-import { Home, Sparkles, Settings, Gauge, Users, Menu, ClipboardList, PanelLeftClose, PanelLeftOpen, Heart, MessageSquare } from 'lucide-react'
+import { Home, Sparkles, Settings, Gauge, Users, Menu, ClipboardList, PanelLeftClose, PanelLeftOpen, Heart, MessageSquare, Package } from 'lucide-react'
+import { productConfig } from '@/features/shop/product.config'
 import { Logo } from '@/components/brand/logo'
 import { Badge } from '@/components/ui/badge'
 import { ThemeToggle } from '@/features/theme/theme-toggle'
@@ -87,6 +88,10 @@ export function AppShell({
           {label(t('feedback.nav'))}
         </Link>
         {grp(t('app.navAccount'))}
+        <Link to="/{-$locale}/app/orders" activeProps={{}} className={item(active === 'orders')} title={t('shop.navOrders')}>
+          <Package size={18} className="shrink-0" />
+          {label(t('shop.navOrders'))}
+        </Link>
         <Link to="/{-$locale}/app/account" activeProps={{}} className={item(active === 'account')} title={t('app.account')}>
           <Settings size={18} className="shrink-0" />
           {label(t('app.account'))}
@@ -113,6 +118,10 @@ export function AppShell({
             <Link to="/{-$locale}/admin/feedback" activeProps={{}} className={item(active === 'admin-feedback')} title={t('admin.feedbackAdmin')}>
               <MessageSquare size={18} className="shrink-0" />
               {label(t('admin.feedbackAdmin'))}
+            </Link>
+            <Link to="/{-$locale}/admin/orders" activeProps={{}} className={item(active === 'admin-orders')} title={t('shop.adminOrders')}>
+              <Package size={18} className="shrink-0" />
+              {label(t('shop.adminOrders'))}
             </Link>
           </>
         )}
@@ -164,7 +173,7 @@ export function AppShell({
           </button>
           <span className="app-crumb">
             <span className="hidden md:inline">
-              FlareStarter <span className="mx-1.5 text-fg-3">/</span>
+              {productConfig.brand.name} <span className="mx-1.5 text-fg-3">/</span>
             </span>
             <b>{crumb}</b>
           </span>

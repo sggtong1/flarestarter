@@ -21,6 +21,65 @@
 
 [English](README.md) | **简体中文**
 
+## Nookdry 商店
+
+这个 fork 是 **Nookdry** 的单品商店：一台无线除湿器，用在衣柜、橱柜、抽屉、玄关、汽车和房车。收入来自主机（一次性）和补充包订阅。落地页是 `/`。文档仍在 `/docs`。管理后台仍在 `/admin`，商店订单在 `/admin/orders`。
+
+### 改品牌和商品
+
+只改 [`src/features/shop/product.config.ts`](src/features/shop/product.config.ts)：
+
+- 母品牌名、logo 字标、标语、颜色
+- 占位价格（主机、每 1/2/3 个月、1/3/6 个补充包）
+- 占位参数、配送、保证、FAQ
+- 示例引言 **不是** 真实评价。把 `sampleQuotes` 清空就会去掉这一节。正式文案上线后清掉 `product.previewBanner`。
+
+按钮、结账、账户、后台的界面文案在 `src/features/i18n/dictionaries/en.ts` 和 `zh.ts`。当前上线的营销正文是英文。改了名字或主色后，同步改 [`public/manifest.json`](public/manifest.json) 的 `name` 和 `theme_color`。favicon 与 `logo192.png` / `logo512.png` 仍是模板图标。
+
+### 在 Stripe 里设定价格
+
+结账复用现有的 Stripe：一次性走 `payment`，订阅走 `subscription`（主机是一次性明细，补充包是周期价格）。
+
+1. 在 Stripe 后台（先用测试模式）为主机和补充包建商品与 Price：
+   - 主机，一次性
+   - 1 / 3 / 6 个补充包，一次性
+   - 每 1、2、3 个月配送一次（`interval=month`，`interval_count` 为 1、2 或 3）
+2. 把 price id 写进 `.dev.vars` 或 Wrangler secret：
+
+```bash
+STRIPE_SECRET_KEY=sk_test_...
+STRIPE_WEBHOOK_SECRET=whsec_...
+STRIPE_PRICE_NOOKDRY_DEVICE=price_...
+STRIPE_PRICE_NOOKDRY_PODS_1=price_...
+STRIPE_PRICE_NOOKDRY_PODS_3=price_...
+STRIPE_PRICE_NOOKDRY_PODS_6=price_...
+STRIPE_PRICE_NOOKDRY_SUB_1=price_...
+STRIPE_PRICE_NOOKDRY_SUB_2=price_...
+STRIPE_PRICE_NOOKDRY_SUB_3=price_...
+```
+
+如果这些 price id 为空、但设置了 `STRIPE_SECRET_KEY`，结账会用 `product.config.ts` 里的金额走 inline `price_data`。测试模式这样即可。上线前请创建真正的 Price，并让配置里的金额和后台一致：页面和 JSON-LD 读配置，真正扣款在设置了 price id 时以 Stripe 为准。
+
+Webhook 仍是 `POST /api/webhooks/stripe`。商店事件带 `metadata.purpose=shop`，不会把模板里的 SaaS Pro 权益授出去。
+
+在 Stripe 打开 Customer Portal（支付方式与发票）。跳过一期、改周期、期末取消在 `/app/orders` 里完成，走同一个 Stripe 客户端。本地：`stripe listen --forward-to localhost:3000/api/webhooks/stripe`。测试卡 `4242 4242 4242 4242`。
+
+订单邮件在设置了 `RESEND_API_KEY` 和 `EMAIL_FROM` 时走 Resend，否则打到控制台。
+
+### 部署到 Cloudflare
+
+```bash
+cp wrangler.example.jsonc wrangler.jsonc   # 只需一次
+pnpm db:migrate:local                      # 建 shop_order 与 shop_subscription
+# 生产 / 预发，D1 建好之后：
+pnpm db:migrate:prod                       # 或 db:migrate:staging
+pnpm deploy:prod                           # 或 deploy:staging
+```
+
+Stripe 和 Resend 用 `wrangler secret put` 设置，不要提交到仓库。`BETTER_AUTH_SECRET` 和 `BETTER_AUTH_URL` 仍然必填。商店跑在 Workers + D1 上；除了 Stripe 和可选的 Resend，不需要额外的付费服务。
+
+---
+
 FlareStarter 只交付能跑的东西：仓库里的每个功能都是真实实现，没有 mock、没有占位、没有为凑数而留空的 TODO。所有代码都跑在 Cloudflare 的低成本（乃至免费）技术栈上 (Workers + D1 + KV)。
 
 ## 核心优势

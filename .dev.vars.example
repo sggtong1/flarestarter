@@ -18,6 +18,16 @@ STRIPE_WEBHOOK_SECRET=
 STRIPE_PRICE_PRO_MONTHLY=
 STRIPE_PRICE_PRO_YEARLY=
 STRIPE_PRICE_PRO_LIFETIME=
+# Nookdry store prices. Blank falls back to inline price_data from
+# src/features/shop/product.config.ts (fine for Stripe test mode).
+# Create the Prices in the Dashboard and paste the ids before live charges.
+STRIPE_PRICE_NOOKDRY_DEVICE=
+STRIPE_PRICE_NOOKDRY_PODS_1=
+STRIPE_PRICE_NOOKDRY_PODS_3=
+STRIPE_PRICE_NOOKDRY_PODS_6=
+STRIPE_PRICE_NOOKDRY_SUB_1=
+STRIPE_PRICE_NOOKDRY_SUB_2=
+STRIPE_PRICE_NOOKDRY_SUB_3=
 # WeChat Pay on one-time sponsorships, via Stripe's wechat_pay — no WeChat merchant
 # account needed. On by default once the Stripe keys are set, but you MUST first enable
 # WeChat Pay in Stripe Dashboard -> Payment methods, or clicking it errors out. Set to

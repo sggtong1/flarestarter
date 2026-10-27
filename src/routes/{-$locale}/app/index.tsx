@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from '@tanstack/react-router'
-import { Settings, Sparkles, ArrowRight } from 'lucide-react'
+import { Settings, Sparkles, ArrowRight, Package } from 'lucide-react'
 import { requireUser } from '@/features/auth/middleware'
 import { getEntitlement } from '@/features/billing/middleware'
 import { useTranslation } from '@/features/i18n/provider'
@@ -53,6 +53,16 @@ function AppHome() {
             <ArrowRight size={15} className="text-fg-3" />
           </div>
           <p className="m-0 text-[13px] leading-snug text-fg-3">{t('app.openAccountSub')}</p>
+        </Link>
+        <Link to="/{-$locale}/app/orders" className="bg-card border border-border rounded-[14px] block p-[18px] transition-colors hover:border-border-strong">
+          <span className="icon-tile">
+            <Package size={20} />
+          </span>
+          <div className="mb-1.5 mt-3.5 flex items-center gap-2">
+            <h3 className="m-0 text-[15px] font-semibold text-foreground">{t('shop.openOrders')}</h3>
+            <ArrowRight size={15} className="text-fg-3" />
+          </div>
+          <p className="m-0 text-[13px] leading-snug text-fg-3">{t('shop.openOrdersSub')}</p>
         </Link>
         <Link to="/{-$locale}/app/pro" className="bg-card border border-border rounded-[14px] block p-[18px] transition-colors hover:border-border-strong">
           <span className="icon-tile">

@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from '@tanstack/react-router'
+import { createFileRoute, Link, useRouter } from '@tanstack/react-router'
 import { useState } from 'react'
 import { User, Mail, Lock } from 'lucide-react'
 import { signUp } from '@/features/auth/auth.client'
@@ -10,8 +10,10 @@ import { authPageHead } from '@/features/auth/head'
 import { AuthCard, Field } from '@/features/auth/components/auth-card'
 import { SocialButtons } from '@/features/auth/components/social-buttons'
 import { Button } from '@/components/ui/button'
+import { parseAuthSearch, safeNextPath } from '@/features/shop/safe-next'
 
 export const Route = createFileRoute('/{-$locale}/(auth)/register')({
+  validateSearch: parseAuthSearch,
   head: ({ params }) => authPageHead(params, 'registerTitle'),
   loader: async () => {
     const [providers, turnstileSiteKey] = await Promise.all([
@@ -25,7 +27,9 @@ export const Route = createFileRoute('/{-$locale}/(auth)/register')({
 
 function Register() {
   const { providers, turnstileSiteKey } = Route.useLoaderData()
+  const { next } = Route.useSearch()
   const { t } = useTranslation()
+  const router = useRouter()
   const { token, enabled, widget, reset } = useTurnstile(turnstileSiteKey)
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
@@ -43,6 +47,16 @@ function Register() {
     if (res.error) {
       setError(t(mapAuthError(res.error)))
       reset() // tokens are single-use
+      return
+    }
+    const signedIn = Boolean((res.data as { token?: string } | null)?.token)
+    const dest = safeNextPath(next)
+    if (signedIn && dest) {
+      window.location.assign(dest)
+      return
+    }
+    if (signedIn) {
+      router.navigate({ to: '/{-$locale}/app' })
       return
     }
     setSent(true)
@@ -77,7 +91,7 @@ function Register() {
       <SocialButtons providers={providers} />
       <p className="mt-5 text-center text-sm text-fg-2">
         {t('auth.haveAccount')}{' '}
-        <Link to="/{-$locale}/login" className="font-semibold text-primary">
+        <Link to="/{-$locale}/login" search={{ next }} className="font-semibold text-primary">
           {t('auth.login')}
         </Link>
       </p>

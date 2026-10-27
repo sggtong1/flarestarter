@@ -6,16 +6,17 @@ import { getAnalyticsToken } from '@/features/analytics/analytics'
 import { Toaster } from '@/components/ui/sonner'
 import { useResolvedTheme } from '@/features/theme/use-resolved-theme'
 import appCss from '@/styles/app.css?url'
+import { productConfig } from '@/features/shop/product.config'
 
 export const Route = createRootRoute({
   head: () => ({
     meta: [
       { charSet: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-      { title: 'FlareStarter — Cloudflare-native SaaS starter' },
-      { name: 'description', content: 'The open-source, Cloudflare-native SaaS starter. Clone it and ship on Workers.' },
-      { property: 'og:title', content: 'FlareStarter' },
-      { property: 'og:description', content: 'The open-source, Cloudflare-native SaaS starter. Clone it and ship on Workers.' },
+      { title: productConfig.seo.title },
+      { name: 'description', content: productConfig.seo.description },
+      { property: 'og:title', content: productConfig.product.name },
+      { property: 'og:description', content: productConfig.seo.description },
       { property: 'og:type', content: 'website' },
     ],
     links: [
