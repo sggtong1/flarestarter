@@ -20,6 +20,7 @@ export function ManageSubscription({
   const isPro = plan === 'pro'
   async function manage() {
     const res = await portal()
+    if (!res.url) return
     window.location.href = res.url
   }
 

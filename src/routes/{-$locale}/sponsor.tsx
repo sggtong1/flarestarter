@@ -43,7 +43,7 @@ export const Route = createFileRoute('/{-$locale}/sponsor')({
 function SponsorPage() {
   const { configured, wechatEnabled, sponsors } = Route.useLoaderData()
   const { status, session_id } = Route.useSearch()
-  const { theme, user } = rootRoute.useLoaderData()
+  const { theme, user, preview } = rootRoute.useLoaderData()
   const { t } = useTranslation()
   const [manageUrl, setManageUrl] = useState<string | null>(null)
 
@@ -90,7 +90,9 @@ function SponsorPage() {
               {configured ? (
                 <SponsorPanel wechatEnabled={wechatEnabled} />
               ) : (
-                <p className="text-center text-fg-3">{t('sponsor.notConfigured')}</p>
+                <p className="text-center text-fg-3" role="status">
+                  {preview ? t('sponsor.previewUnavailable') : t('sponsor.notConfigured')}
+                </p>
               )}
             </div>
           </>

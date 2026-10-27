@@ -104,7 +104,10 @@
 		"TURNSTILE_SECRET_KEY": "",
 		"CF_ANALYTICS_TOKEN": "",
 		"SENTRY_DSN": "",
-		"RESEND_AUDIENCE_ID": ""
+		"RESEND_AUDIENCE_ID": "",
+		// Blank outside staging. env.staging sets this to "staging" so the
+		// preview banner and noindex rules stay off in local dev and production.
+		"APP_ENV": ""
 	},
 	/**
 	 * Static Assets
@@ -124,6 +127,14 @@
 	"env": {
 		"staging": {
 			"name": "flarestarter-staging",
+			// Named environments do not inherit top-level vars. APP_ENV is the
+			// only plain var this preview needs in the file; secrets (including
+			// BETTER_AUTH_SECRET and BETTER_AUTH_URL) are set with
+			// `wrangler secret put --env staging` and are not written here.
+			// Keep APP_ENV exactly "staging" — production must not set it.
+			"vars": {
+				"APP_ENV": "staging"
+			},
 			"triggers": {
 				"crons": [
 					"0 3 * * *"

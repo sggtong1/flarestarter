@@ -12,8 +12,17 @@ import { StoreShell } from './store-shell'
 
 const DROPLETS = [0, 10, 18, 28, 36, 46, 54]
 
-export function Landing({ loggedIn }: { loggedIn: boolean }) {
+export function Landing({
+  loggedIn,
+  checkoutConfigured,
+  preview,
+}: {
+  loggedIn: boolean
+  checkoutConfigured: boolean
+  preview: boolean
+}) {
   const { t } = useTranslation()
+  const unavailable = preview ? t('shop.previewCheckout') : t('shop.notConfigured')
   const [selection, setSelection] = useState<Selection>(defaultSelection)
   const quote = quoteSelection(selection)
   const copy = productConfig.copy
@@ -135,9 +144,15 @@ export function Landing({ loggedIn }: { loggedIn: boolean }) {
           selection={selection}
           onChange={setSelection}
           cta={
-            <Link to="/{-$locale}/checkout" search={search} className={buttonVariants({ size: 'lg', className: 'nd-press w-full' })}>
-              {t('shop.checkoutCta')}
-            </Link>
+            checkoutConfigured ? (
+              <Link to="/{-$locale}/checkout" search={search} className={buttonVariants({ size: 'lg', className: 'nd-press w-full' })}>
+                {t('shop.checkoutCta')}
+              </Link>
+            ) : (
+              <p className="rounded-2xl px-4 py-3 text-sm leading-relaxed" role="status" style={{ background: 'var(--bg-alt)', color: 'var(--fg-2)' }}>
+                {unavailable}
+              </p>
+            )
           }
         />
       </section>
@@ -272,9 +287,15 @@ export function Landing({ loggedIn }: { loggedIn: boolean }) {
           <h2 className="nd-display relative max-w-xl text-4xl font-semibold tracking-[-0.04em] md:text-6xl">{copy.finalTitle}</h2>
           <p className="relative mt-4 max-w-xl text-lg leading-relaxed" style={{ color: 'color-mix(in srgb, var(--primary-foreground) 86%, transparent)' }}>{copy.finalLede}</p>
           <p className="relative mt-8 text-4xl font-semibold tabular-nums tracking-tight">{formatMoney(quote.dueTodayCents)}</p>
-          <Link to="/{-$locale}/checkout" search={search} className="nd-press relative mt-6 inline-flex h-12 items-center rounded-full bg-white px-6 font-semibold" style={{ color: productConfig.colors.ink }}>
-            {copy.primaryCta}
-          </Link>
+          {checkoutConfigured ? (
+            <Link to="/{-$locale}/checkout" search={search} className="nd-press relative mt-6 inline-flex h-12 items-center rounded-full bg-white px-6 font-semibold" style={{ color: productConfig.colors.ink }}>
+              {copy.primaryCta}
+            </Link>
+          ) : (
+            <p className="relative mt-6 max-w-md rounded-2xl bg-white/15 px-4 py-3 text-sm leading-relaxed" role="status">
+              {unavailable}
+            </p>
+          )}
         </div>
       </section>
 
@@ -284,9 +305,15 @@ export function Landing({ loggedIn }: { loggedIn: boolean }) {
             <p className="truncate text-xs" style={{ color: 'var(--fg-2)' }}>{productConfig.product.name}</p>
             <p className="font-semibold tabular-nums">{formatMoney(quote.dueTodayCents)}</p>
           </div>
-          <Link to="/{-$locale}/checkout" search={search} className="nd-press ml-auto rounded-full px-4 py-2.5 text-sm font-semibold" style={{ background: 'var(--primary)', color: 'var(--primary-foreground)' }}>
-            {t('shop.checkoutCta')}
-          </Link>
+          {checkoutConfigured ? (
+            <Link to="/{-$locale}/checkout" search={search} className="nd-press ml-auto rounded-full px-4 py-2.5 text-sm font-semibold" style={{ background: 'var(--primary)', color: 'var(--primary-foreground)' }}>
+              {t('shop.checkoutCta')}
+            </Link>
+          ) : (
+            <p className="ml-auto max-w-[12rem] text-right text-xs leading-snug" role="status" style={{ color: 'var(--fg-2)' }}>
+              {unavailable}
+            </p>
+          )}
         </div>
       </div>
     </StoreShell>

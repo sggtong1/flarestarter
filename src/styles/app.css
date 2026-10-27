@@ -585,6 +585,56 @@ input {
 }
 
 /* ==========================================================================
+   Staging preview banner
+   A sticky notice on every page when APP_ENV=staging. Height is a CSS
+   variable so other sticky bars (store header, story pins, marketing nav)
+   sit below it. The variable is 0 outside the preview, so those offsets
+   collapse back to their production values.
+   ========================================================================== */
+:root {
+  --preview-banner-h: 0px;
+}
+html[data-preview] {
+  --preview-banner-h: 2.75rem;
+}
+@media (max-width: 640px) {
+  html[data-preview] {
+    --preview-banner-h: 4.25rem;
+  }
+}
+.preview-banner {
+  position: sticky;
+  top: 0;
+  z-index: 80;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  height: var(--preview-banner-h);
+  margin: 0;
+  padding: 0.35rem 1rem;
+  background: #1c1915;
+  color: #f4efe7;
+  border-bottom: 1px solid #3a342c;
+  font-family: var(--font-display);
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.35;
+  letter-spacing: -0.01em;
+  text-align: center;
+  text-wrap: balance;
+}
+/* Sticky `top-0` bars would slide under the banner. Unlayered CSS beats
+   Tailwind utilities, and the banner itself does not use `top-0`. */
+html[data-preview] .sticky.top-0 {
+  top: var(--preview-banner-h);
+}
+html[data-preview] .app-side.fixed {
+  top: var(--preview-banner-h);
+  height: auto;
+}
+
+/* ==========================================================================
    impersonation banner
    ========================================================================== */
 .impersonation-bar {

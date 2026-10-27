@@ -13,7 +13,7 @@ export const checkout = createServerFn({ method: 'POST' })
     const user = await readUser()
     if (!user) throw redirect({ to: '/{-$locale}/login' })
     const priceId = data.interval === 'monthly' ? env.STRIPE_PRICE_PRO_MONTHLY : env.STRIPE_PRICE_PRO_YEARLY
-    if (!priceId) throw new Error(`Missing Stripe price id for ${data.interval}`)
+    if (!env.STRIPE_SECRET_KEY?.trim() || !priceId?.trim()) return { url: null }
     const base = new URL(env.BETTER_AUTH_URL).origin
     return startCheckout(
       createDb(env.DB),
@@ -36,7 +36,7 @@ export const checkoutLifetime = createServerFn({ method: 'POST' }).handler(async
   const user = await readUser()
   if (!user) throw redirect({ to: '/{-$locale}/login' })
   const priceId = env.STRIPE_PRICE_PRO_LIFETIME
-  if (!priceId) throw new Error('Missing Stripe price id for lifetime')
+  if (!env.STRIPE_SECRET_KEY?.trim() || !priceId?.trim()) return { url: null }
   const base = new URL(env.BETTER_AUTH_URL).origin
   return startCheckout(
     createDb(env.DB),
@@ -58,6 +58,7 @@ export const portal = createServerFn({ method: 'POST' }).handler(async () => {
   const { createStripeProvider } = await import('./stripe')
   const user = await readUser()
   if (!user) throw redirect({ to: '/{-$locale}/login' })
+  if (!env.STRIPE_SECRET_KEY?.trim()) return { url: null }
   const base = new URL(env.BETTER_AUTH_URL).origin
   return openPortal(createDb(env.DB), createStripeProvider(env), user.id, `${base}/app/account`)
 })

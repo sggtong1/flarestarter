@@ -15,6 +15,7 @@ export function PaymentFailedBanner({ show }: { show: boolean }) {
 
   async function update() {
     const res = await portal()
+    if (!res.url) return
     window.location.href = res.url // Stripe Customer Portal → update card
   }
 

@@ -52,6 +52,7 @@ export function SponsorPanel({ wechatEnabled = false }: { wechatEnabled?: boolea
           message: message || undefined,
         },
       })
+      if (!url) return
       window.location.href = url
     } finally {
       setBusy(null)

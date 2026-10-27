@@ -58,5 +58,5 @@ export function isWechatPayEnabled(env: {
   STRIPE_WEBHOOK_SECRET?: string
   STRIPE_WECHAT_PAY_ENABLED?: string
 }): boolean {
-  return !!env.STRIPE_SECRET_KEY && !!env.STRIPE_WEBHOOK_SECRET && env.STRIPE_WECHAT_PAY_ENABLED !== 'false'
+  return !!env.STRIPE_SECRET_KEY?.trim() && !!env.STRIPE_WEBHOOK_SECRET?.trim() && env.STRIPE_WECHAT_PAY_ENABLED !== 'false'
 }

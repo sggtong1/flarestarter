@@ -7,9 +7,11 @@ import { Toaster } from '@/components/ui/sonner'
 import { useResolvedTheme } from '@/features/theme/use-resolved-theme'
 import appCss from '@/styles/app.css?url'
 import { productConfig } from '@/features/shop/product.config'
+import { PREVIEW_BANNER, PREVIEW_ROBOTS } from '@/lib/preview'
+import { getPreview } from '@/lib/preview.fns'
 
 export const Route = createRootRoute({
-  head: () => ({
+  head: ({ loaderData }) => ({
     meta: [
       { charSet: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
@@ -18,6 +20,7 @@ export const Route = createRootRoute({
       { property: 'og:title', content: productConfig.product.name },
       { property: 'og:description', content: productConfig.seo.description },
       { property: 'og:type', content: 'website' },
+      ...(loaderData?.preview ? [{ name: 'robots', content: PREVIEW_ROBOTS }] : []),
     ],
     links: [
       { rel: 'stylesheet', href: appCss },
@@ -33,13 +36,19 @@ export const Route = createRootRoute({
     // page on the site renders as an unstyled fragment. All three values are
     // cosmetic/optional (theme cookie, header user, analytics token), so a
     // failure (e.g. a D1 blip in getOptionalUser) degrades to defaults instead.
+    let preview = false
+    try {
+      preview = await getPreview()
+    } catch {
+      preview = false
+    }
     try {
       const { theme, themeFromCookie } = await getPreferences()
       const user = await getOptionalUser()
       const analyticsToken = await getAnalyticsToken()
-      return { theme, themeFromCookie, user, analyticsToken }
+      return { theme, themeFromCookie, user, analyticsToken, preview }
     } catch {
-      return { theme: 'dark' as const, themeFromCookie: false, user: null, analyticsToken: null }
+      return { theme: 'dark' as const, themeFromCookie: false, user: null, analyticsToken: null, preview }
     }
   },
   component: RootComponent,
@@ -52,7 +61,7 @@ export const Route = createRootRoute({
 const THEME_BOOT_SCRIPT = `(function(){try{if(!/(?:^|;\\s*)theme=/.test(document.cookie)&&matchMedia('(prefers-color-scheme: light)').matches){document.documentElement.classList.replace('dark','light')}}catch(e){}})()`
 
 function RootComponent() {
-  const { theme, analyticsToken } = Route.useLoaderData()
+  const { theme, analyticsToken, preview } = Route.useLoaderData()
   const params = useParams({ strict: false }) as { locale?: string }
   const pathname = useRouterState({ select: (s) => s.location.pathname })
   // Validate before use: on 404s the optional {-$locale} param swallows the
@@ -62,12 +71,17 @@ function RootComponent() {
   const lang = isLocale(params.locale) ? params.locale : pathname.startsWith('/docs') ? 'zh' : defaultLocale
   const resolvedTheme = useResolvedTheme(theme)
   return (
-    <html lang={lang} className={theme} suppressHydrationWarning>
+    <html lang={lang} className={theme} data-preview={preview ? '' : undefined} suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{ __html: THEME_BOOT_SCRIPT }} />
         <HeadContent />
       </head>
       <body>
+        {preview && (
+          <div className="preview-banner" role="status">
+            {PREVIEW_BANNER}
+          </div>
+        )}
         <Outlet />
         <Scripts />
         <Toaster theme={resolvedTheme} />
